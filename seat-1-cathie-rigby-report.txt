@@ -5,7 +5,7 @@ As of May 4, 2026
 In       In       Contributor/Payee                           Amount    City      State
 Oregon?  County?                                                                       
 -------  -------  ------------------------------------------  --------  --------  -----
-Yes      Yes      May and Done (24823)                        1,769.73  Oregon    OR   
+Yes      Yes      May and Done (24823) (DEM)                  1,769.73  Oregon    OR   
 Yes      Yes      Catherine Rigby (DEM)                         770.65  Newport   OR   
 Yes      Yes      Beth Young (DEM)                              500.00  Newport   OR   
 Yes      Yes      Primaltones                                   450.00  Newport   OR   
@@ -17,7 +17,7 @@ Yes      Yes      Total                                       4,340.38
 
 Yes      No       Color PAC (16131)                           6,350.00  Portland  OR   
 Yes      No       Oregon AFL-CIO                                750.00  Portland  OR   
-Yes      No       Democratic Party of Oregon Federal            550.00  Portland  OR   
+Yes      No       Democratic Party of Oregon Federal (DEM)      550.00  Portland  OR   
 Yes      No       Total                                       7,650.00                 
 
 n/a      n/a      Misc. Cash Contributions up to $100 (24)    2,305.00                 

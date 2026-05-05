@@ -5,7 +5,7 @@ As of May 4, 2026
 In       In       Contributor/Payee                           Amount    City          State
 Oregon?  County?                                                                           
 -------  -------  ------------------------------------------  --------  ------------  -----
-Yes      Yes      May and Done (24823)                        1,769.72  Oregon        OR   
+Yes      Yes      May and Done (24823) (DEM)                  1,769.72  Oregon        OR   
 Yes      Yes      Robert Eder (NAV)                             500.00  Newport       OR   
 Yes      Yes      Wendy Yorkshire (DEM)                         500.00  Logsden       OR   
 Yes      Yes      Edward Backus (DEM)                           473.03  Newport       OR   
@@ -23,7 +23,7 @@ Yes      Yes      Caren Braby (DEM)                             120.00  Seal Roc
 Yes      Yes      Total                                       5,539.75                     
 
 Yes      No       Christine Carpenter                         1,000.00  Portland      OR   
-Yes      No       Democratic Party of Oregon (353)              650.00  Portland      OR   
+Yes      No       Democratic Party of Oregon (353) (DEM)        650.00  Portland      OR   
 Yes      No       Carmen Matthews                               200.00  Coos Bay      OR   
 Yes      No       Total                                       1,850.00                     
 
