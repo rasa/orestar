@@ -1,13 +1,13 @@
-The following candidate filed a certificate to spend less than $5,000 on their
-campaign:
+The following candidates filed an ORESTAR certificate to spend 
+less than $5,000 on their campaigns:
 
 Name                 Seat
 -------------------- ------
 Joe Steere (REP)     Seat 2
 Marci Baker (NAV)    Seat 2
 
-The following candidates are spending less than $750 on their campaigns and as 
-such, do not require an ORESTAR account:
+The following candidates are spending less than $750 on their 
+campaigns and as such, do not require an ORESTAR account:
 
 Name                 Seat
 -------------------- ------
