@@ -5,10 +5,10 @@ As of May 4, 2026
 In       In       Contributor/Payee                             Amount  City          State
 Oregon?  County?                                                                           
 -------  -------  ------------------------------------------  --------  ------------  -----
-Yes      Yes      Chris Chandler                              1,800.00  Newport       OR   
-Yes      Yes      Guy B Greco                                   750.00  Tidewater     OR   
-Yes      Yes      Cyntha Jacobi                                 250.00  Newport       OR   
-Yes      Yes      Monica Kirk                                   101.00  Depoe Bay     OR   
+Yes      Yes      Chris Chandler (DEM)                        1,800.00  Newport       OR   
+Yes      Yes      Guy B Greco (DEM)                             750.00  Tidewater     OR   
+Yes      Yes      Cyntha Jacobi (DEM)                           250.00  Newport       OR   
+Yes      Yes      Monica Kirk (DEM)                             101.00  Depoe Bay     OR   
 Yes      Yes      Total                                       2,901.00                     
 
 No       No       Interim Marketing Solutions                 2,995.00  Crystal Lake  IL   

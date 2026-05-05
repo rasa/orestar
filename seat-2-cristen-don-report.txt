@@ -5,21 +5,21 @@ As of May 4, 2026
 In       In       Contributor/Payee                             Amount  City          State
 Oregon?  County?                                                                           
 -------  -------  ------------------------------------------  --------  ------------  -----
-Yes      Yes      May and Done (24823)                        1,769.72  Oregon        OR   
-Yes      Yes      Robert Eder                                   500.00  Newport       OR   
-Yes      Yes      Wendy Yorkshire                               500.00  Logsden       OR   
-Yes      Yes      Edward Backus                                 473.03  Newport       OR   
-Yes      Yes      Charles Plybon                                300.00  South Beach   OR   
-Yes      Yes      Clifford Ryer                                 250.00  Seal Rock     OR   
-Yes      Yes      Laura Anderson                                250.00  Newport       OR   
-Yes      Yes      Richard Brodeur                               250.00  Newport       OR   
-Yes      Yes      Robert Kemp                                   250.00  Newport       OR   
-Yes      Yes      David Fox                                     200.00  Toledo        OR   
-Yes      Yes      Michael Harrington                            200.00  Newport       OR   
-Yes      Yes      Michelle Branam                               200.00  Newport       OR   
-Yes      Yes      Cristen Don                                   152.00  South Beach   OR   
-Yes      Yes      Mary Infante                                  125.00  Depoe Bay     OR   
-Yes      Yes      Caren Braby                                   120.00  Seal Rock     OR   
+Yes      Yes      May and Done (PAC 24823)                    1,769.72  Oregon        OR   
+Yes      Yes      Robert Eder (NAV)                             500.00  Newport       OR   
+Yes      Yes      Wendy Yorkshire (DEM)                         500.00  Logsden       OR   
+Yes      Yes      Edward Backus (DEM)                           473.03  Newport       OR   
+Yes      Yes      Charles Plybon (DEM)                          300.00  South Beach   OR   
+Yes      Yes      Clifford Ryer (DEM)                           250.00  Seal Rock     OR   
+Yes      Yes      Laura Anderson (NAV)                          250.00  Newport       OR   
+Yes      Yes      Richard Brodeur (DEM)                         250.00  Newport       OR   
+Yes      Yes      Robert Kemp (IND)                             250.00  Newport       OR   
+Yes      Yes      David Fox (DEM)                               200.00  Toledo        OR   
+Yes      Yes      Michael Harrington (DEM)                      200.00  Newport       OR   
+Yes      Yes      Michelle Branam (IND)                         200.00  Newport       OR   
+Yes      Yes      Cristen Don (DEM)                             152.00  South Beach   OR   
+Yes      Yes      Mary Infante (DEM)                            125.00  Depoe Bay     OR   
+Yes      Yes      Caren Braby (DEM)                             120.00  Seal Rock     OR   
 Yes      Yes      Total                                       5,539.75                     
 
 Yes      No       Christine Carpenter                         1,000.00  Portland      OR   
@@ -40,4 +40,4 @@ n/a      n/a      Misc. Cash Contributions up to $100 (29)    3,520.00
 n/a      n/a      Misc. In-Kind Contributions up to $100 (3)    179.91                     
 n/a      n/a      Total                                       3,699.91                     
 
-                  Grand Total                                 14,889.66                     
+                  Grand Total                                14,889.66                     

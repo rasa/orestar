@@ -5,13 +5,13 @@ As of May 4, 2026
 In       In       Contributor/Payee                             Amount  City            State
 Oregon?  County?                                                                             
 -------  -------  ------------------------------------------  --------  --------------  -----
-Yes      Yes      Ross Smith                                  1,817.26  Gleneden Beach  OR   
-Yes      Yes      Casey Miller                                1,638.00  Newport         OR   
-Yes      Yes      Rio Davidson                                  500.00  Newport         OR   
-Yes      Yes      Heather Brann                                 250.00  Otis            OR   
-Yes      Yes      Marie Dickerson                               250.00  Lincoln City    OR   
-Yes      Yes      Rose Jade                                     250.00  Newport         OR   
-Yes      Yes      Barbara Davis                                 200.00  Waldport        OR   
+Yes      Yes      Ross Smith (IND)                            1,817.26  Gleneden Beach  OR   
+Yes      Yes      Casey Miller (NAV)                          1,638.00  Newport         OR   
+Yes      Yes      Rio Davidson (DEM)                            500.00  Newport         OR   
+Yes      Yes      Heather Brann (DEM)                           250.00  Otis            OR   
+Yes      Yes      Marie Dickerson (REP)                         250.00  Lincoln City    OR   
+Yes      Yes      Rose Jade (DEM)                               250.00  Newport         OR   
+Yes      Yes      Barbara Davis (DEM)                           200.00  Waldport        OR   
 Yes      Yes      Total                                       4,905.26                       
 
 n/a      n/a      Misc. Cash Contributions up to $100 (7)       850.00                       
