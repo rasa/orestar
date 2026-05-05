@@ -1,8 +1,8 @@
-Curtis Landers (Seat 3):
+Curtis Landers (NAV) (Seat 3):
 ORESTAR Contributions
 As of May 4, 2026
 
-In       In       Contributor/Payee                             Amount  City               State
+In       In       Contributor/Payee                           Amount    City               State
 Oregon?  County?                                                                                
 -------  -------  ------------------------------------------  --------  -----------------  -----
 Yes      Yes      Lyle Mattson (IND)                          4,031.00  Toledo             OR   
@@ -12,11 +12,11 @@ Yes      Yes      Donette Paige (REP)                           500.00  Newport 
 Yes      Yes      Paul Martinson (NAV)                          500.00  South beach        OR   
 Yes      Yes      Kelley Ellis (DEM)                            250.00  Siletz             OR   
 Yes      Yes      Linda Snow (DEM)                              250.00  Newport            OR   
-Yes      Yes      Marie Dickerson (NAV?)                        250.00  Lincoln City       OR   
+Yes      Yes      Marie Dickerson (REP)                         250.00  Lincoln City       OR   
 Yes      Yes      Braulio Escobar (DEM)                         200.00  Newport            OR   
 Yes      Yes      Ross Smith (IND)                              200.00  Gleneden Beach     OR   
 Yes      Yes      David Lapof (IND)                             150.00  Siletz             OR   
-Yes      Yes      Total                                      10,022.78                          
+Yes      Yes      Total                                       10,022.78                          
 
 Yes      No       Oregon's Sheriffs (15803)                   1,000.00  Mt. Hood Parkdale  OR   
 Yes      No       Matt English                                  250.00  Mt. Hood Parkdale  OR   
@@ -27,4 +27,4 @@ n/a      n/a      Misc. Cash Contributions up to $100 (19)    2,507.00
 n/a      n/a      Misc. In-Kind Contributions up to $100 (2)     62.49                          
 n/a      n/a      Total                                       2,569.49                          
 
-                  Grand Total                                14,092.27                          
+                  Grand Total                                 14,092.27                          

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import date, datetime
-from decimal import Decimal, InvalidOperation
+from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 from pathlib import Path
 from typing import Dict, List, Optional, Sequence, Set, Tuple
 
@@ -67,7 +67,6 @@ class ReportRow:
     amount: Decimal
     city: str
     state: str
-    emp_name: str
 
 
 @dataclass(frozen=True)
@@ -84,22 +83,93 @@ class CandidateSummary:
     def total(self) -> Decimal:
         return self.inside_county + self.outside_county + self.not_known
 
-    @property
-    def pct_outside_county(self) -> Decimal:
-        if self.total == Decimal("0"):
-            return Decimal("0")
-        return (self.outside_county / self.total) * Decimal("100")
 
-    @property
-    def pct_outside_oregon(self) -> Decimal:
-        if self.total == Decimal("0"):
-            return Decimal("0")
-        return (self.outside_oregon / self.total) * Decimal("100")
+class VoterPartyLookup:
+    def __init__(self) -> None:
+        self.by_exact_name: Dict[str, str] = {}
+        self.by_last_and_first_initial: Dict[Tuple[str, str], Optional[str]] = {}
+
+    @classmethod
+    def from_file(cls, path: Path) -> "VoterPartyLookup":
+        lookup = cls()
+        if not path.exists():
+            return lookup
+
+        lines = path.read_text(encoding="utf-8").splitlines()
+        for raw_line in lines:
+            line = raw_line.strip()
+            if not line:
+                continue
+
+            parts = line.split("\t")
+            if len(parts) < 2:
+                parts = line.split()
+
+            if len(parts) < 2:
+                continue
+
+            party = parts[-1].strip().upper()
+            name = " ".join(parts[:-1]).strip()
+            if not name or not party:
+                continue
+
+            lookup._add_entry(name, party)
+
+        return lookup
+
+    def _add_entry(self, name: str, party: str) -> None:
+        exact_key = self._normalize_name(name)
+        if exact_key:
+            self.by_exact_name[exact_key] = party
+
+        fallback_key = self._last_and_first_initial_key(name)
+        if fallback_key is None:
+            return
+
+        if fallback_key not in self.by_last_and_first_initial:
+            self.by_last_and_first_initial[fallback_key] = party
+        else:
+            existing = self.by_last_and_first_initial[fallback_key]
+            if existing != party:
+                self.by_last_and_first_initial[fallback_key] = None
+
+    def party_for_name(self, name: str) -> Optional[str]:
+        exact_key = self._normalize_name(name)
+        if exact_key in self.by_exact_name:
+            return self.by_exact_name[exact_key]
+
+        fallback_key = self._last_and_first_initial_key(name)
+        if fallback_key is None:
+            return None
+
+        return self.by_last_and_first_initial.get(fallback_key)
+
+    def append_party(self, name: str) -> str:
+        party = self.party_for_name(name)
+        if not party:
+            return name
+        if name.endswith(f" ({party})"):
+            return name
+        return f"{name} ({party})"
+
+    def _normalize_name(self, name: str) -> str:
+        cleaned = " ".join(name.strip().upper().replace(",", " ").split())
+        return cleaned
+
+    def _last_and_first_initial_key(self, name: str) -> Optional[Tuple[str, str]]:
+        tokens = [token for token in name.strip().upper().replace(",", " ").split() if token]
+        if len(tokens) < 2:
+            return None
+        first_initial = tokens[0][0]
+        last_name = tokens[-1]
+        return last_name, first_initial
+
 
 class CampaignFinanceReportBuilder:
-    def __init__(self, input_dir: Path, output_dir: Path) -> None:
+    def __init__(self, input_dir: Path, output_dir: Path, voter_lookup: VoterPartyLookup) -> None:
         self.input_dir = input_dir
         self.output_dir = output_dir
+        self.voter_lookup = voter_lookup
 
     def build_reports(self, filenames: Sequence[str]) -> None:
         self.output_dir.mkdir(parents=True, exist_ok=True)
@@ -116,9 +186,17 @@ class CampaignFinanceReportBuilder:
 
             summaries.append(self._build_candidate_summary(rows, input_path.name))
 
-        summary_report_text = self._format_summary_report(summaries)
-        summary_output_path = self.output_dir / "summary-report.txt"
-        summary_output_path.write_text(summary_report_text, encoding="utf-8")
+        summary_amount_report_text = self._format_summary_report(summaries)
+        (self.output_dir / "summary-report.txt").write_text(
+            summary_amount_report_text,
+            encoding="utf-8",
+        )
+
+        summary_pct_report_text = self._format_summary_percentage_report(summaries)
+        (self.output_dir / "summary-percentages-report.txt").write_text(
+            summary_pct_report_text,
+            encoding="utf-8",
+        )
 
     def _read_rows(self, path: Path) -> List[ReportRow]:
         df = pd.read_excel(path, engine="xlrd", dtype=str).fillna("")
@@ -197,11 +275,10 @@ class CampaignFinanceReportBuilder:
                 ReportRow(
                     in_state=in_state,
                     in_county=in_county,
-                    contributor_payee=display_name,
+                    contributor_payee=self.voter_lookup.append_party(display_name),
                     amount=final_amount,
                     city=item.city,
                     state=item.state,
-                    emp_name=item.emp_name,
                 )
             )
 
@@ -225,23 +302,19 @@ class CampaignFinanceReportBuilder:
         not_known = Decimal("0")
 
         for row in rows:
-            if row.in_state == "Yes" and row.in_county == "Yes":
+            if row.in_county == "Yes":
                 inside_county += row.amount
-            elif row.in_state == "Yes" and row.in_county == "No":
+            if row.in_county == "No":
                 outside_county += row.amount
-            elif row.in_state == "No" and row.in_county == "No":
+            if row.in_state == "Yes":
+                inside_oregon += row.amount
+            if row.in_state == "No":
                 outside_oregon += row.amount
-            elif row.in_state == "No" and row.in_county == "Yes":
-                outside_oregon += row.amount
-            elif row.in_state == "n/a" or row.in_county == "n/a":
+            if row.in_state == "n/a" or row.in_county == "n/a":
                 not_known += row.amount
-            else:
-                not_known += row.amount
-
-        inside_oregon = inside_county + outside_county
 
         return CandidateSummary(
-            candidate=candidate_name,
+            candidate=self.voter_lookup.append_party(candidate_name),
             seat=seat,
             inside_county=inside_county,
             outside_county=outside_county,
@@ -419,14 +492,15 @@ class CampaignFinanceReportBuilder:
             "ORESTAR Contributions",
             "As of May 4, 2026",
             "",
-            self._format_line(headers_top, widths),
-            self._format_line(headers_bottom, widths),
+            self._format_mixed_line(headers_top, widths, numeric_cols=set()),
+            self._format_mixed_line(headers_bottom, widths, numeric_cols=set()),
             self._format_separator(widths),
         ]
 
         current_group: Optional[Tuple[str, str]] = None
         subtotal = Decimal("0")
         grand_total = Decimal("0")
+        numeric_cols = {3}
 
         for row in rows:
             group = (row.in_state, row.in_county)
@@ -434,13 +508,13 @@ class CampaignFinanceReportBuilder:
             if current_group is None:
                 current_group = group
             elif group != current_group:
-                parts.append(self._format_candidate_total_line(current_group, subtotal, widths))
+                parts.append(self._format_candidate_total_line(current_group, subtotal, widths, numeric_cols))
                 parts.append("")
                 subtotal = Decimal("0")
                 current_group = group
 
             parts.append(
-                self._format_line(
+                self._format_mixed_line(
                     (
                         row.in_state,
                         row.in_county,
@@ -450,6 +524,7 @@ class CampaignFinanceReportBuilder:
                         row.state,
                     ),
                     widths,
+                    numeric_cols=numeric_cols,
                 )
             )
 
@@ -457,10 +532,10 @@ class CampaignFinanceReportBuilder:
             grand_total += row.amount
 
         if current_group is not None:
-            parts.append(self._format_candidate_total_line(current_group, subtotal, widths))
+            parts.append(self._format_candidate_total_line(current_group, subtotal, widths, numeric_cols))
 
         parts.append("")
-        parts.append(self._format_candidate_grand_total_line(grand_total, widths))
+        parts.append(self._format_candidate_grand_total_line(grand_total, widths, numeric_cols))
 
         return "\n".join(parts) + "\n"
 
@@ -485,6 +560,7 @@ class CampaignFinanceReportBuilder:
             "Known",
             "",
         )
+        numeric_cols = {2, 3, 4, 5, 6, 7}
 
         data_rows: List[List[str]] = [
             [
@@ -525,14 +601,14 @@ class CampaignFinanceReportBuilder:
             "ORESTAR Contributions",
             "As of May 4, 2026",
             "",
-            self._format_line(headers_top, widths),
-            self._format_line(headers_bottom, widths),
+            self._format_mixed_line(headers_top, widths, numeric_cols=set()),
+            self._format_mixed_line(headers_bottom, widths, numeric_cols=set()),
             self._format_separator(widths),
         ]
 
         for summary in summaries:
             parts.append(
-                self._format_line(
+                self._format_mixed_line(
                     (
                         summary.candidate,
                         summary.seat,
@@ -544,13 +620,120 @@ class CampaignFinanceReportBuilder:
                         self._format_money(summary.total),
                     ),
                     widths,
+                    numeric_cols=numeric_cols,
                 )
             )
 
         parts.append(self._format_separator(widths))
-        parts.append(self._format_line(total_row, widths))
+        parts.append(self._format_mixed_line(total_row, widths, numeric_cols=numeric_cols))
 
         return "\n".join(parts) + "\n"
+
+    def _format_summary_percentage_report(self, summaries: Sequence[CandidateSummary]) -> str:
+        headers_top: Tuple[str, ...] = (
+            "Candidate",
+            "Seat",
+            "Inside",
+            "Outside",
+            "Inside",
+            "Outside",
+            "Not",
+            "Total",
+        )
+        headers_bottom: Tuple[str, ...] = (
+            "",
+            "",
+            "County",
+            "County",
+            "Oregon",
+            "Oregon",
+            "Known",
+            "",
+        )
+        numeric_cols = {2, 3, 4, 5, 6, 7}
+
+        data_rows: List[List[str]] = [
+            [
+                summary.candidate,
+                summary.seat,
+                self._format_percent(summary.inside_county, summary.total),
+                self._format_percent(summary.outside_county, summary.total),
+                self._format_percent(summary.inside_oregon, summary.total),
+                self._format_percent(summary.outside_oregon, summary.total),
+                self._format_percent(summary.not_known, summary.total),
+                self._format_percent(summary.total, summary.total),
+            ]
+            for summary in summaries
+        ]
+
+        count = Decimal(len(summaries)) if summaries else Decimal("0")
+
+        avg_inside_county = self._average([s.inside_county / s.total * Decimal("100") if s.total else Decimal("0") for s in summaries], count)
+        avg_outside_county = self._average([s.outside_county / s.total * Decimal("100") if s.total else Decimal("0") for s in summaries], count)
+        avg_inside_oregon = self._average([s.inside_oregon / s.total * Decimal("100") if s.total else Decimal("0") for s in summaries], count)
+        avg_outside_oregon = self._average([s.outside_oregon / s.total * Decimal("100") if s.total else Decimal("0") for s in summaries], count)
+        avg_not_known = self._average([s.not_known / s.total * Decimal("100") if s.total else Decimal("0") for s in summaries], count)
+
+        average_row: List[str] = [
+            "Average",
+            "",
+            self._format_percent_value(avg_inside_county),
+            self._format_percent_value(avg_outside_county),
+            self._format_percent_value(avg_inside_oregon),
+            self._format_percent_value(avg_outside_oregon),
+            self._format_percent_value(avg_not_known),
+            self._format_percent_value(Decimal("100.0") if summaries else Decimal("0.0")),
+        ]
+
+        widths = self._compute_widths(headers_top, headers_bottom, data_rows + [average_row])
+
+        parts: List[str] = [
+            "Summary Percentage Report",
+            "ORESTAR Contributions",
+            "As of May 4, 2026",
+            "",
+            self._format_mixed_line(headers_top, widths, numeric_cols=set()),
+            self._format_mixed_line(headers_bottom, widths, numeric_cols=set()),
+            self._format_separator(widths),
+        ]
+
+        for summary in summaries:
+            parts.append(
+                self._format_mixed_line(
+                    (
+                        summary.candidate,
+                        summary.seat,
+                        self._format_percent(summary.inside_county, summary.total),
+                        self._format_percent(summary.outside_county, summary.total),
+                        self._format_percent(summary.inside_oregon, summary.total),
+                        self._format_percent(summary.outside_oregon, summary.total),
+                        self._format_percent(summary.not_known, summary.total),
+                        self._format_percent(summary.total, summary.total),
+                    ),
+                    widths,
+                    numeric_cols=numeric_cols,
+                )
+            )
+
+        parts.append(self._format_separator(widths))
+        parts.append(self._format_mixed_line(average_row, widths, numeric_cols=numeric_cols))
+
+        return "\n".join(parts) + "\n"
+
+    def _average(self, values: Sequence[Decimal], count: Decimal) -> Decimal:
+        if count == Decimal("0"):
+            return Decimal("0")
+        return sum(values, Decimal("0")) / count
+
+    def _format_percent(self, numerator: Decimal, denominator: Decimal) -> str:
+        if denominator == Decimal("0"):
+            return "0.0%"
+        value = (numerator / denominator) * Decimal("100")
+        return self._format_percent_value(value)
+
+    def _format_percent_value(self, value: Decimal) -> str:
+        rounded = value.quantize(Decimal("0.1"), rounding=ROUND_HALF_UP)
+        return f"{rounded:.1f}%"
 
     def _candidate_name_and_seat_from_filename(self, filename: str) -> Tuple[str, str]:
         stem = Path(filename).stem
@@ -565,6 +748,7 @@ class CampaignFinanceReportBuilder:
 
     def _report_title_from_filename(self, filename: str) -> str:
         candidate_name, seat = self._candidate_name_and_seat_from_filename(filename)
+        candidate_name = self.voter_lookup.append_party(candidate_name)
         if seat:
             return f"{candidate_name} ({seat})"
         return candidate_name
@@ -595,16 +779,16 @@ class CampaignFinanceReportBuilder:
     def _format_money(self, amount: Decimal) -> str:
         return f"{amount:,.2f}"
 
-    def _format_line(self, values: Sequence[str], widths: Sequence[int]) -> str:
-        text_columns = {0, 1, 2, 4, 5}
-        number_columns = {3, 6, 7}
-
+    def _format_mixed_line(
+        self,
+        values: Sequence[str],
+        widths: Sequence[int],
+        numeric_cols: Set[int],
+    ) -> str:
         parts: List[str] = []
         for i, value in enumerate(values):
-            if i in number_columns:
+            if i in numeric_cols:
                 parts.append(value.rjust(widths[i]))
-            elif i in text_columns:
-                parts.append(value.ljust(widths[i]))
             else:
                 parts.append(value.ljust(widths[i]))
         return "  ".join(parts)
@@ -614,8 +798,9 @@ class CampaignFinanceReportBuilder:
         group: Tuple[str, str],
         subtotal: Decimal,
         widths: Sequence[int],
+        numeric_cols: Set[int],
     ) -> str:
-        return self._format_line(
+        return self._format_mixed_line(
             (
                 group[0],
                 group[1],
@@ -625,14 +810,16 @@ class CampaignFinanceReportBuilder:
                 "",
             ),
             widths,
+            numeric_cols=numeric_cols,
         )
 
     def _format_candidate_grand_total_line(
         self,
         grand_total: Decimal,
         widths: Sequence[int],
+        numeric_cols: Set[int],
     ) -> str:
-        return self._format_line(
+        return self._format_mixed_line(
             (
                 "",
                 "",
@@ -642,12 +829,14 @@ class CampaignFinanceReportBuilder:
                 "",
             ),
             widths,
+            numeric_cols=numeric_cols,
         )
 
 
 def main() -> None:
     input_dir = Path(".")
     output_dir = Path(".")
+    voters_path = input_dir / "voters.txt"
 
     filenames = [
         "seat-1-casey-miller.xls",
@@ -658,7 +847,12 @@ def main() -> None:
         "seat-3-walter-chuck.xls",
     ]
 
-    builder = CampaignFinanceReportBuilder(input_dir=input_dir, output_dir=output_dir)
+    voter_lookup = VoterPartyLookup.from_file(voters_path)
+    builder = CampaignFinanceReportBuilder(
+        input_dir=input_dir,
+        output_dir=output_dir,
+        voter_lookup=voter_lookup,
+    )
     builder.build_reports(filenames)
 
 

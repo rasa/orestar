@@ -1,8 +1,8 @@
-Casey Miller (Seat 1):
+Casey Miller (NAV) (Seat 1):
 ORESTAR Contributions
 As of May 4, 2026
 
-In       In       Contributor/Payee                             Amount  City            State
+In       In       Contributor/Payee                           Amount    City            State
 Oregon?  County?                                                                             
 -------  -------  ------------------------------------------  --------  --------------  -----
 Yes      Yes      Ross Smith (IND)                            1,817.26  Gleneden Beach  OR   

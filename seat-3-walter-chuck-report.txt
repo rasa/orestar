@@ -1,12 +1,12 @@
-Walter Chuck (Seat 3):
+Walter Chuck (DEM) (Seat 3):
 ORESTAR Contributions
 As of May 4, 2026
 
-In       In       Contributor/Payee                                    Amount  City            State
+In       In       Contributor/Payee                                  Amount    City            State
 Oregon?  County?                                                                                    
 -------  -------  -------------------------------------------------  --------  --------------  -----
 Yes      Yes      Walter Chuck (DEM)                                 4,850.00  Newport         OR   
-Yes      Yes      May and Done (PAC 24823)                           1,769.73  Oregon          OR   
+Yes      Yes      May and Done (24823)                               1,769.73  Oregon          OR   
 Yes      Yes      Lincoln County Democratic Central Committee (326)  1,300.00  Gleneden Beach  OR   
 Yes      Yes      Robert Eder (NAV)                                  1,000.00  Newport         OR   
 Yes      Yes      Cynthia Jacobi (DEM)                                 250.00  Newport         OR   
@@ -14,7 +14,7 @@ Yes      Yes      Deborah Kozar Duus (DEM)                             250.00  N
 Yes      Yes      Doug Hunt (DEM)                                      200.00  TOLEDO          OR   
 Yes      Yes      Shannon Nottestad (DEM)                              200.00  Newport         OR   
 Yes      Yes      Susan Florentino Florentino (DEM)                    200.00  Depoe Bay       OR   
-Yes      Yes      Total                                             10,019.73                       
+Yes      Yes      Total                                              10,019.73                       
 
 Yes      No       Democratic Party of Oregon Federal                 1,300.00  Portland        OR   
 Yes      No       Gabriel Shepherd                                     200.00  Cheshire        OR   
@@ -28,4 +28,4 @@ n/a      n/a      Misc. Cash Contributions up to $100 (15)           1,285.00
 n/a      n/a      Misc. In-Kind Contributions up to $100 (1)            87.92                       
 n/a      n/a      Total                                              1,372.92                       
 
-                  Grand Total                                       13,267.65                       
+                  Grand Total                                        13,267.65                       

@@ -1,11 +1,11 @@
-Cristen Don (Seat 2):
+Cristen Don (DEM) (Seat 2):
 ORESTAR Contributions
 As of May 4, 2026
 
-In       In       Contributor/Payee                             Amount  City          State
+In       In       Contributor/Payee                           Amount    City          State
 Oregon?  County?                                                                           
 -------  -------  ------------------------------------------  --------  ------------  -----
-Yes      Yes      May and Done (PAC 24823)                    1,769.72  Oregon        OR   
+Yes      Yes      May and Done (24823)                        1,769.72  Oregon        OR   
 Yes      Yes      Robert Eder (NAV)                             500.00  Newport       OR   
 Yes      Yes      Wendy Yorkshire (DEM)                         500.00  Logsden       OR   
 Yes      Yes      Edward Backus (DEM)                           473.03  Newport       OR   
@@ -40,4 +40,4 @@ n/a      n/a      Misc. Cash Contributions up to $100 (29)    3,520.00
 n/a      n/a      Misc. In-Kind Contributions up to $100 (3)    179.91                     
 n/a      n/a      Total                                       3,699.91                     
 
-                  Grand Total                                14,889.66                     
+                  Grand Total                                 14,889.66                     
