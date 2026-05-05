@@ -1,11 +1,14 @@
 from __future__ import annotations
 
+import csv
 from dataclasses import dataclass
 from datetime import date, datetime
 from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 from pathlib import Path
 from typing import Dict, List, Optional, Sequence, Set, Tuple
 
+import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 
 
@@ -34,6 +37,14 @@ RELEVANT_SUBTYPES: set[str] = {
     "Cash Contribution",
     "In-Kind Contribution",
     "Loan Received (Non-Exempt)",
+}
+
+PARTY_LABELS: Dict[str, str] = {
+    "DEM": "Democrat",
+    "REP": "Republican",
+    "IND": "OR Independent Party",
+    "NAV": "Non-affiliated",
+    "UNK": "Unknown / Misc.",
 }
 
 MISC_CASH_SMALL_LABEL = "Miscellaneous Cash Contributions $100 and under"
@@ -67,6 +78,7 @@ class ReportRow:
     amount: Decimal
     city: str
     state: str
+    donor_party: str
 
 
 @dataclass(frozen=True)
@@ -153,8 +165,7 @@ class VoterPartyLookup:
         return f"{name} ({party})"
 
     def _normalize_name(self, name: str) -> str:
-        cleaned = " ".join(name.strip().upper().replace(",", " ").split())
-        return cleaned
+        return " ".join(name.strip().upper().replace(",", " ").split())
 
     def _last_and_first_initial_key(self, name: str) -> Optional[Tuple[str, str]]:
         tokens = [token for token in name.strip().upper().replace(",", " ").split() if token]
@@ -175,10 +186,12 @@ class CampaignFinanceReportBuilder:
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
         summaries: List[CandidateSummary] = []
+        all_rows: List[ReportRow] = []
 
         for filename in filenames:
             input_path = self.input_dir / filename
             rows = self._read_rows(input_path)
+            all_rows.extend(rows)
 
             report_text = self._format_candidate_report(rows, input_path.name)
             output_path = self.output_dir / f"{input_path.stem}-report.txt"
@@ -187,16 +200,20 @@ class CampaignFinanceReportBuilder:
             summaries.append(self._build_candidate_summary(rows, input_path.name))
 
         summary_amount_report_text = self._format_summary_report(summaries)
-        (self.output_dir / "summary-report.txt").write_text(
-            summary_amount_report_text,
-            encoding="utf-8",
-        )
+        summary_report_path = self.output_dir / "summary-report.txt"
+        summary_report_path.write_text(summary_amount_report_text, encoding="utf-8")
+
+        self._append_summary_footer(summary_report_path)
 
         summary_pct_report_text = self._format_summary_percentage_report(summaries)
         (self.output_dir / "summary-percentages-report.txt").write_text(
             summary_pct_report_text,
             encoding="utf-8",
         )
+
+        self._write_summary_percentage_csv(summaries)
+        self._generate_summary_charts(summaries)
+        self._generate_party_charts(all_rows)
 
     def _read_rows(self, path: Path) -> List[ReportRow]:
         df = pd.read_excel(path, engine="xlrd", dtype=str).fillna("")
@@ -263,6 +280,7 @@ class CampaignFinanceReportBuilder:
                 display_name = f"{item.misc_display_label} ({item.contribution_count})"
                 in_state = "n/a"
                 in_county = "n/a"
+                donor_party = "UNK"
             else:
                 display_name = item.contributor_payee
                 in_state, in_county = self._derive_location_flags(
@@ -270,6 +288,7 @@ class CampaignFinanceReportBuilder:
                     state=item.state,
                     zip_code=item.zip_code,
                 )
+                donor_party = self.voter_lookup.party_for_name(item.contributor_payee) or "UNK"
 
             rows.append(
                 ReportRow(
@@ -279,6 +298,7 @@ class CampaignFinanceReportBuilder:
                     amount=final_amount,
                     city=item.city,
                     state=item.state,
+                    donor_party=donor_party,
                 )
             )
 
@@ -297,21 +317,22 @@ class CampaignFinanceReportBuilder:
 
         inside_county = Decimal("0")
         outside_county = Decimal("0")
-        inside_oregon = Decimal("0")
         outside_oregon = Decimal("0")
         not_known = Decimal("0")
 
         for row in rows:
-            if row.in_county == "Yes":
+            if row.in_state == "Yes" and row.in_county == "Yes":
                 inside_county += row.amount
-            if row.in_county == "No":
+            elif row.in_state == "Yes" and row.in_county == "No":
                 outside_county += row.amount
-            if row.in_state == "Yes":
-                inside_oregon += row.amount
-            if row.in_state == "No":
+            elif row.in_state == "No":
                 outside_oregon += row.amount
-            if row.in_state == "n/a" or row.in_county == "n/a":
+            elif row.in_state == "n/a" or row.in_county == "n/a":
                 not_known += row.amount
+            else:
+                not_known += row.amount
+
+        inside_oregon = inside_county + outside_county
 
         return CandidateSummary(
             candidate=self.voter_lookup.append_party(candidate_name),
@@ -322,6 +343,53 @@ class CampaignFinanceReportBuilder:
             outside_oregon=outside_oregon,
             not_known=not_known,
         )
+
+    def _build_party_summary(self, rows: Sequence[ReportRow]) -> Dict[str, CandidateSummary]:
+        party_codes = ["DEM", "REP", "IND", "NAV", "UNK"]
+        summary: Dict[str, CandidateSummary] = {}
+
+        for party_code in party_codes:
+            summary[party_code] = CandidateSummary(
+                candidate=PARTY_LABELS[party_code],
+                seat="",
+                inside_county=Decimal("0"),
+                outside_county=Decimal("0"),
+                inside_oregon=Decimal("0"),
+                outside_oregon=Decimal("0"),
+                not_known=Decimal("0"),
+            )
+
+        for row in rows:
+            party_code = row.donor_party if row.donor_party in summary else "UNK"
+            current = summary[party_code]
+
+            inside_county = current.inside_county
+            outside_county = current.outside_county
+            outside_oregon = current.outside_oregon
+            not_known = current.not_known
+
+            if row.in_state == "Yes" and row.in_county == "Yes":
+                inside_county += row.amount
+            elif row.in_state == "Yes" and row.in_county == "No":
+                outside_county += row.amount
+            elif row.in_state == "No":
+                outside_oregon += row.amount
+            else:
+                not_known += row.amount
+
+            inside_oregon = inside_county + outside_county
+
+            summary[party_code] = CandidateSummary(
+                candidate=PARTY_LABELS[party_code],
+                seat="",
+                inside_county=inside_county,
+                outside_county=outside_county,
+                inside_oregon=inside_oregon,
+                outside_oregon=outside_oregon,
+                not_known=not_known,
+            )
+
+        return summary
 
     def _classify_misc_small(self, contributor_payee: str) -> Tuple[bool, str]:
         normalized = contributor_payee.strip().lower()
@@ -668,11 +736,26 @@ class CampaignFinanceReportBuilder:
 
         count = Decimal(len(summaries)) if summaries else Decimal("0")
 
-        avg_inside_county = self._average([s.inside_county / s.total * Decimal("100") if s.total else Decimal("0") for s in summaries], count)
-        avg_outside_county = self._average([s.outside_county / s.total * Decimal("100") if s.total else Decimal("0") for s in summaries], count)
-        avg_inside_oregon = self._average([s.inside_oregon / s.total * Decimal("100") if s.total else Decimal("0") for s in summaries], count)
-        avg_outside_oregon = self._average([s.outside_oregon / s.total * Decimal("100") if s.total else Decimal("0") for s in summaries], count)
-        avg_not_known = self._average([s.not_known / s.total * Decimal("100") if s.total else Decimal("0") for s in summaries], count)
+        avg_inside_county = self._average(
+            [self._pct_value(s.inside_county, s.total) for s in summaries],
+            count,
+        )
+        avg_outside_county = self._average(
+            [self._pct_value(s.outside_county, s.total) for s in summaries],
+            count,
+        )
+        avg_inside_oregon = self._average(
+            [self._pct_value(s.inside_oregon, s.total) for s in summaries],
+            count,
+        )
+        avg_outside_oregon = self._average(
+            [self._pct_value(s.outside_oregon, s.total) for s in summaries],
+            count,
+        )
+        avg_not_known = self._average(
+            [self._pct_value(s.not_known, s.total) for s in summaries],
+            count,
+        )
 
         average_row: List[str] = [
             "Average",
@@ -720,16 +803,237 @@ class CampaignFinanceReportBuilder:
 
         return "\n".join(parts) + "\n"
 
+    def _write_summary_percentage_csv(self, summaries: Sequence[CandidateSummary]) -> None:
+        output_path = self.output_dir / "summary-percentages-report.csv"
+
+        with output_path.open("w", newline="", encoding="utf-8") as f:
+            writer = csv.writer(f)
+            writer.writerow(
+                [
+                    "Candidate",
+                    "Seat",
+                    "Inside County %",
+                    "Outside County %",
+                    "Inside Oregon %",
+                    "Outside Oregon %",
+                    "Not Known %",
+                    "Total %",
+                ]
+            )
+
+            inside_county_values: List[Decimal] = []
+            outside_county_values: List[Decimal] = []
+            inside_oregon_values: List[Decimal] = []
+            outside_oregon_values: List[Decimal] = []
+            not_known_values: List[Decimal] = []
+
+            for summary in summaries:
+                inside_county_pct = self._pct_value(summary.inside_county, summary.total)
+                outside_county_pct = self._pct_value(summary.outside_county, summary.total)
+                inside_oregon_pct = self._pct_value(summary.inside_oregon, summary.total)
+                outside_oregon_pct = self._pct_value(summary.outside_oregon, summary.total)
+                not_known_pct = self._pct_value(summary.not_known, summary.total)
+
+                inside_county_values.append(inside_county_pct)
+                outside_county_values.append(outside_county_pct)
+                inside_oregon_values.append(inside_oregon_pct)
+                outside_oregon_values.append(outside_oregon_pct)
+                not_known_values.append(not_known_pct)
+
+                writer.writerow(
+                    [
+                        summary.candidate,
+                        summary.seat,
+                        f"{inside_county_pct:.1f}",
+                        f"{outside_county_pct:.1f}",
+                        f"{inside_oregon_pct:.1f}",
+                        f"{outside_oregon_pct:.1f}",
+                        f"{not_known_pct:.1f}",
+                        "100.0" if summary.total else "0.0",
+                    ]
+                )
+
+            count = Decimal(len(summaries)) if summaries else Decimal("0")
+            avg_inside_county = self._average(inside_county_values, count)
+            avg_outside_county = self._average(outside_county_values, count)
+            avg_inside_oregon = self._average(inside_oregon_values, count)
+            avg_outside_oregon = self._average(outside_oregon_values, count)
+            avg_not_known = self._average(not_known_values, count)
+
+            writer.writerow(
+                [
+                    "Average",
+                    "",
+                    f"{avg_inside_county:.1f}",
+                    f"{avg_outside_county:.1f}",
+                    f"{avg_inside_oregon:.1f}",
+                    f"{avg_outside_oregon:.1f}",
+                    f"{avg_not_known:.1f}",
+                    "100.0" if summaries else "0.0",
+                ]
+            )
+
+    def _generate_summary_charts(self, summaries: Sequence[CandidateSummary]) -> None:
+        if not summaries:
+            return
+
+        candidates = [summary.candidate for summary in summaries]
+
+        inside_county = np.array([float(summary.inside_county) for summary in summaries])
+        outside_county = np.array([float(summary.outside_county) for summary in summaries])
+        outside_oregon = np.array([float(summary.outside_oregon) for summary in summaries])
+        not_known = np.array([float(summary.not_known) for summary in summaries])
+
+        x = np.arange(len(candidates))
+        width = 0.7
+
+        plt.figure(figsize=(14, 8))
+        plt.bar(x, inside_county, width, label="Inside Lincoln County")
+        plt.bar(x, outside_county, width, bottom=inside_county, label="Outside County / Inside Oregon")
+        plt.bar(x, outside_oregon, width, bottom=inside_county + outside_county, label="Outside Oregon")
+        plt.bar(
+            x,
+            not_known,
+            width,
+            bottom=inside_county + outside_county + outside_oregon,
+            label="Unknown / Misc.",
+        )
+
+        plt.xticks(x, candidates, rotation=20, ha="right")
+        plt.ylabel("Dollars")
+        plt.title("Where Campaign Money Is Coming From")
+        plt.legend()
+        plt.tight_layout()
+        plt.savefig(self.output_dir / "campaign-money-by-source.png", dpi=200)
+        plt.close()
+
+        inside_county_pct = np.array([float(self._pct_value(s.inside_county, s.total)) for s in summaries])
+        outside_county_pct = np.array([float(self._pct_value(s.outside_county, s.total)) for s in summaries])
+        outside_oregon_pct = np.array([float(self._pct_value(s.outside_oregon, s.total)) for s in summaries])
+        not_known_pct = np.array([float(self._pct_value(s.not_known, s.total)) for s in summaries])
+
+        plt.figure(figsize=(14, 8))
+        plt.bar(x, inside_county_pct, width, label="Inside Lincoln County")
+        plt.bar(x, outside_county_pct, width, bottom=inside_county_pct, label="Outside County / Inside Oregon")
+        plt.bar(
+            x,
+            outside_oregon_pct,
+            width,
+            bottom=inside_county_pct + outside_county_pct,
+            label="Outside Oregon",
+        )
+        plt.bar(
+            x,
+            not_known_pct,
+            width,
+            bottom=inside_county_pct + outside_county_pct + outside_oregon_pct,
+            label="Unknown / Misc.",
+        )
+
+        plt.xticks(x, candidates, rotation=20, ha="right")
+        plt.ylabel("Percent of Total")
+        plt.title("Share of Campaign Money by Source")
+        plt.ylim(0, 100)
+        plt.legend()
+        plt.tight_layout()
+        plt.savefig(self.output_dir / "campaign-money-by-source-percent.png", dpi=200)
+        plt.close()
+
+    def _generate_party_charts(self, all_rows: Sequence[ReportRow]) -> None:
+        if not all_rows:
+            return
+
+        party_summary = self._build_party_summary(all_rows)
+        ordered = [party_summary[code] for code in ["DEM", "REP", "IND", "NAV", "UNK"]]
+
+        labels = [item.candidate for item in ordered]
+        inside_county = np.array([float(item.inside_county) for item in ordered])
+        outside_county = np.array([float(item.outside_county) for item in ordered])
+        outside_oregon = np.array([float(item.outside_oregon) for item in ordered])
+        not_known = np.array([float(item.not_known) for item in ordered])
+
+        x = np.arange(len(labels))
+        width = 0.7
+
+        plt.figure(figsize=(12, 8))
+        plt.bar(x, inside_county, width, label="Inside Lincoln County")
+        plt.bar(x, outside_county, width, bottom=inside_county, label="Outside County / Inside Oregon")
+        plt.bar(x, outside_oregon, width, bottom=inside_county + outside_county, label="Outside Oregon")
+        plt.bar(
+            x,
+            not_known,
+            width,
+            bottom=inside_county + outside_county + outside_oregon,
+            label="Unknown / Misc.",
+        )
+
+        plt.xticks(x, labels, rotation=15, ha="right")
+        plt.ylabel("Dollars")
+        plt.title("Campaign Money by Donor Party")
+        plt.legend()
+        plt.tight_layout()
+        plt.savefig(self.output_dir / "campaign-money-by-donor-party.png", dpi=200)
+        plt.close()
+
+        inside_county_pct = np.array([float(self._pct_value(item.inside_county, item.total)) for item in ordered])
+        outside_county_pct = np.array([float(self._pct_value(item.outside_county, item.total)) for item in ordered])
+        outside_oregon_pct = np.array([float(self._pct_value(item.outside_oregon, item.total)) for item in ordered])
+        not_known_pct = np.array([float(self._pct_value(item.not_known, item.total)) for item in ordered])
+
+        plt.figure(figsize=(12, 8))
+        plt.bar(x, inside_county_pct, width, label="Inside Lincoln County")
+        plt.bar(x, outside_county_pct, width, bottom=inside_county_pct, label="Outside County / Inside Oregon")
+        plt.bar(
+            x,
+            outside_oregon_pct,
+            width,
+            bottom=inside_county_pct + outside_county_pct,
+            label="Outside Oregon",
+        )
+        plt.bar(
+            x,
+            not_known_pct,
+            width,
+            bottom=inside_county_pct + outside_county_pct + outside_oregon_pct,
+            label="Unknown / Misc.",
+        )
+
+        plt.xticks(x, labels, rotation=15, ha="right")
+        plt.ylabel("Percent of Total")
+        plt.title("Share of Campaign Money by Donor Party")
+        plt.ylim(0, 100)
+        plt.legend()
+        plt.tight_layout()
+        plt.savefig(self.output_dir / "campaign-money-by-donor-party-percent.png", dpi=200)
+        plt.close()
+
+    def _append_summary_footer(self, summary_report_path: Path) -> None:
+        footer_path = self.input_dir / "summary-footer.txt"
+        if not footer_path.exists():
+            return
+
+        footer_text = footer_path.read_text(encoding="utf-8")
+        with summary_report_path.open("a", encoding="utf-8") as f:
+            f.write("\n")
+            f.write(footer_text)
+            if not footer_text.endswith("\n"):
+                f.write("\n")
+
     def _average(self, values: Sequence[Decimal], count: Decimal) -> Decimal:
         if count == Decimal("0"):
             return Decimal("0")
         return sum(values, Decimal("0")) / count
 
-    def _format_percent(self, numerator: Decimal, denominator: Decimal) -> str:
+    def _pct_value(self, numerator: Decimal, denominator: Decimal) -> Decimal:
         if denominator == Decimal("0"):
-            return "0.0%"
-        value = (numerator / denominator) * Decimal("100")
-        return self._format_percent_value(value)
+            return Decimal("0.0")
+        return ((numerator / denominator) * Decimal("100")).quantize(
+            Decimal("0.1"),
+            rounding=ROUND_HALF_UP,
+        )
+
+    def _format_percent(self, numerator: Decimal, denominator: Decimal) -> str:
+        return self._format_percent_value(self._pct_value(numerator, denominator))
 
     def _format_percent_value(self, value: Decimal) -> str:
         rounded = value.quantize(Decimal("0.1"), rounding=ROUND_HALF_UP)
@@ -848,6 +1152,7 @@ def main() -> None:
     ]
 
     voter_lookup = VoterPartyLookup.from_file(voters_path)
+
     builder = CampaignFinanceReportBuilder(
         input_dir=input_dir,
         output_dir=output_dir,

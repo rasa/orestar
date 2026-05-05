@@ -7,9 +7,9 @@ Candidate             Seat    Inside  Outside  Inside  Outside  Not    Total
 --------------------  ------  ------  -------  ------  -------  -----  ------
 Casey Miller (NAV)    Seat 1   84.2%     0.0%   84.2%     0.0%  15.8%  100.0%
 Cathie Rigby (DEM)    Seat 1   30.0%    52.8%   82.8%     0.0%  17.2%  100.0%
-Cheri Brubaker (DEM)  Seat 1   43.0%    55.5%   43.0%    55.5%   1.4%  100.0%
-Cristen Don (DEM)     Seat 2   37.2%    37.9%   49.6%    25.5%  24.8%  100.0%
+Cheri Brubaker (DEM)  Seat 1   96.8%     0.0%   96.8%   124.9%   3.2%  100.0%
+Cristen Don (DEM)     Seat 2   50.0%    16.7%   66.6%    34.3%  33.4%  100.0%
 Curtis Landers (NAV)  Seat 3   71.1%    10.6%   81.8%     0.0%  18.2%  100.0%
-Walter Chuck (DEM)    Seat 3   75.5%    14.1%   86.8%     2.8%  10.3%  100.0%
+Walter Chuck (DEM)    Seat 3   77.7%    11.6%   89.4%     2.9%  10.6%  100.0%
 --------------------  ------  ------  -------  ------  -------  -----  ------
-Average                        56.8%    28.5%   71.4%    14.0%  14.6%  100.0%
+Average                        68.3%    15.3%   83.6%    27.0%  16.4%  100.0%

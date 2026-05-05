@@ -1,0 +1,52 @@
+---
+name: summarize
+
+on:
+  # schedule:
+  #   # run every day at 3am
+  #   - cron: '0 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run actions/checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Run actions/setup-python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: 'pip'
+
+      - name: Run pip install -r requirements.txt
+        run: |
+          # Run pip install -r requirements.txt
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run python summarize.py
+        # ignore syntax error on the following line
+        run: python summarize.py
+
+      - name: Commit changes
+        run: |
+          # Commit changes
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+          git add -A
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          git commit -m "Automated update"
+          git push

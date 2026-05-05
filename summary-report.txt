@@ -7,9 +7,27 @@ Candidate             Seat    Inside     Outside    Inside     Outside   Not    
 --------------------  ------  ---------  ---------  ---------  --------  ---------  ---------
 Casey Miller (NAV)    Seat 1   4,905.26       0.00   4,905.26      0.00     917.26   5,822.52
 Cathie Rigby (DEM)    Seat 1   4,340.38   7,650.00  11,990.38      0.00   2,492.92  14,483.30
-Cheri Brubaker (DEM)  Seat 1   2,901.00   3,745.00   2,901.00  3,745.00      96.25   6,742.25
-Cristen Don (DEM)     Seat 2   5,539.75   5,650.00   7,389.75  3,800.00   3,699.91  14,889.66
+Cheri Brubaker (DEM)  Seat 1   2,901.00       0.00   2,901.00  3,745.00      96.25   2,997.25
+Cristen Don (DEM)     Seat 2   5,539.75   1,850.00   7,389.75  3,800.00   3,699.91  11,089.66
 Curtis Landers (NAV)  Seat 3  10,022.78   1,500.00  11,522.78      0.00   2,569.49  14,092.27
-Walter Chuck (DEM)    Seat 3  10,019.73   1,875.00  11,519.73    375.00   1,372.92  13,267.65
+Walter Chuck (DEM)    Seat 3  10,019.73   1,500.00  11,519.73    375.00   1,372.92  12,892.65
 --------------------  ------  ---------  ---------  ---------  --------  ---------  ---------
-Total                         37,728.90  20,420.00  50,228.90  7,920.00  11,148.75  69,297.65
+Total                         37,728.90  12,500.00  50,228.90  7,920.00  11,148.75  61,377.65
+
+The following candidate filed a certificate to spend less than $5,000 on their
+campaign:
+
+Name                 Seat
+-------------------- ------
+Joe Steere (REP)     Seat 2
+Marci Baker (NAV)    Seat 2
+
+The following candidates are spending less than $750 on their campaigns and as 
+such, do not require an ORESTAR account:
+
+Name                 Seat
+-------------------- ------
+Dru Earls (DEM)      Seat 1
+Nicolle Moody (REP)  Seat 1
+
+Eddie Townsend (NAV) Seat 2
