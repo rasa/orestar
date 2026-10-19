@@ -93,6 +93,16 @@ class CampaignFinanceReportBuilder:
             state = raw_row.get("State", "").strip().upper()
             zip_code = self._normalize_zip(raw_row.get("Zip", ""))
 
+            # C&E Systems miskeyed this business, the correct address is:
+            # 423 NW Ivy Ave, Dallas, OR 97338
+            # per
+            # https://egov.sos.state.or.us/br/pkg_web_name_srch_inq.show_detl?p_be_rsn=1078854&p_srce=BR_INQ&p_print=FALSE
+            if contributor_payee.lower().replace(",", "").strip() == "end of the trail llc":
+                contributor_payee = "End Of The Trail, LLC"
+                city = "Dallas"
+                state = "OR"
+                zip_code = "97338"
+
             emp_name = self._derive_emp_name(
                 emp_name=raw_row.get("Emp Name", ""),
                 employ_ind=raw_row.get("Employ Ind", ""),

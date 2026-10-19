@@ -1,5 +1,5 @@
 # ORESTAR Campaign Donations
-For Lincoln County Commissioner Candidates
+For Lincoln County Commissioner Candidates<br/>
 As of October 18, 2026
 
 ## campaign-money-by-source
@@ -38,8 +38,8 @@ Yes      Yes      Patricia Ferrell-French (DEM)                 250.00  Waldport
 Yes      Yes      Rose Jade (DEM)                               250.00  Newport         OR   
 Yes      Yes      Total                                       7,369.58                       
 
-No       No       End Of The Trail, LLC                         500.00  Price           UT   
-No       No       Total                                         500.00                       
+Yes      No       End Of The Trail, LLC                         500.00  Dallas          OR   
+Yes      No       Total                                         500.00                       
 
 n/a      n/a      Misc. Cash Contributions up to $100 (12)    1,175.00                       
 n/a      n/a      Misc. In-Kind Contributions up to $100 (1)     67.26                       
