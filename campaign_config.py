@@ -28,10 +28,10 @@ PARTY_LABELS: Dict[str, str] = {
 }
 
 PARTY_COLORS: Dict[str, str] = {
-    "DEM": "blue",
-    "REP": "red",
-    "IND": "violet",
-    "NAV": "purple",
+    "DEM": "lightskyblue",
+    "REP": "lightcoral",
+    "IND": "#BCA7BD",
+    "NAV": "lightgoldenrodyellow",
     "UNK": "gray",
 }
 

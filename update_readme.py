@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+"""update_readme.py"""
+
 from pathlib import Path
 
 readme = Path("README.md")

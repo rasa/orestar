@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
-"""campaign_charts.py"""
+"""Charts for ORESTAR contribution reports.
+
+The brown segment identifies the candidate's own contributions, already included
+in the geographic and donor-party totals. The listed values should be reconciled
+with the latest ORESTAR exports whenever the reports are updated.
+"""
 
 from __future__ import annotations
 
-from decimal import Decimal, ROUND_HALF_UP
+from decimal import Decimal
 from pathlib import Path
 from typing import Sequence
 
@@ -17,188 +22,185 @@ INSIDE_COUNTY_COLOR = "green"
 OUTSIDE_COUNTY_COLOR = "yellow"
 OUTSIDE_OREGON_COLOR = "red"
 UNKNOWN_COLOR = "gray"
+SELF_CONTRIBUTION_COLOR = "#C49A6C"  # light brown; readable with black labels
+
+THRESHOLD = 0.04
+
+# Candidate's own contributions listed in ORESTAR reports as of October 18, 2026.
+# These amounts are ALREADY included in the summary data. Do not add them to totals.
+# Each entry contains (donor party, own contributions in dollars).
+CANDIDATE_OWN_CONTRIBUTIONS = {
+    "Joe Steere": ("REP", Decimal("4200.00")), # include's his wife's $1,200 contribution
+    "Casey Miller": ("NAV", Decimal("2052.32")),
+    "Cathie Rigby": ("DEM", Decimal("978.45")),
+    "Catherine Rigby": ("DEM", Decimal("978.45")),  # alternative name
+    "Cristen Don": ("DEM", Decimal("152.00")),
+}
+
 
 class CampaignChartWriter:
     def __init__(self, output_dir: Path) -> None:
         self.output_dir = output_dir
+
+    @staticmethod
+    def _own_contributions(candidates: Sequence[str]) -> tuple[np.ndarray, list[str | None]]:
+        values = []
+        parties = []
+        for display_name in candidates:
+            name = display_name.split(" (", 1)[0].strip()
+            party, amount = CANDIDATE_OWN_CONTRIBUTIONS.get(name, (None, Decimal("0")))
+            values.append(float(amount))
+            parties.append(party)
+        return np.array(values, dtype=float), parties
+
+    @staticmethod
+    def _subtract_checked(
+        original: np.ndarray, amounts: np.ndarray, candidates: Sequence[str], category: str
+    ) -> np.ndarray:
+        if np.any(original + 0.001 < amounts):
+            bad = [candidates[i] for i in np.flatnonzero(original + 0.001 < amounts)]
+            raise ValueError(
+                f"Candidate contributions exceed the {category} category for {bad}. "
+                "Review CANDIDATE_OWN_CONTRIBUTIONS against current ORESTAR data."
+            )
+        return original - amounts
 
     def generate_summary_charts(self, summaries: Sequence[CandidateSummary]) -> None:
         if not summaries:
             return
 
         candidates = [summary.candidate for summary in summaries]
+        inside = np.array([float(s.inside_county) for s in summaries])
+        outside = np.array([float(s.outside_county) for s in summaries])
+        out_of_state = np.array([float(s.outside_oregon) for s in summaries])
+        unknown = np.array([float(s.not_known) for s in summaries])
+        self_amount, _ = self._own_contributions(candidates)
 
-        inside_county = np.array([float(summary.inside_county) for summary in summaries])
-        outside_county = np.array([float(summary.outside_county) for summary in summaries])
-        outside_oregon = np.array([float(summary.outside_oregon) for summary in summaries])
-        not_known = np.array([float(summary.not_known) for summary in summaries])
+        # All four candidate contributions currently appear as inside-county.
+        # Remove them from green before displaying the same dollars in brown.
+        inside_excluding_self = self._subtract_checked(
+            inside, self_amount, candidates, "Inside Lincoln County"
+        )
+        amounts = [inside_excluding_self, outside, out_of_state, unknown, self_amount]
+        labels = [
+            "Inside Lincoln County (other donors)",
+            "Outside County / Inside Oregon",
+            "Outside Oregon",
+            "Unknown / Misc.",
+            "Candidate's Own Contributions",
+        ]
+        colors = [
+            INSIDE_COUNTY_COLOR,
+            OUTSIDE_COUNTY_COLOR,
+            OUTSIDE_OREGON_COLOR,
+            UNKNOWN_COLOR,
+            SELF_CONTRIBUTION_COLOR,
+        ]
 
-        x = np.arange(len(candidates))
-        width = 0.7
-
-        plt.figure(figsize=(14, 8))
-        # plt.bar(x, inside_county, width, label="Inside Lincoln County", color=INSIDE_COUNTY_COLOR)
-        # plt.bar(x, outside_county, width, bottom=inside_county, label="Outside County / Inside Oregon", color=OUTSIDE_COUNTY_COLOR)
-        # plt.bar(x, outside_oregon, width, bottom=inside_county + outside_county, label="Outside Oregon", color=OUTSIDE_OREGON_COLOR)
-        # plt.bar(
-        #     x,
-        #     not_known,
-        #     width,
-        #     bottom=inside_county + outside_county + outside_oregon,
-        #     label="Unknown / Misc.",
-        #     color=UNKNOWN_COLOR,
-        # )
-
-        ax = plt.gca()
-
-        plt.bar(x, inside_county, width, label="Inside Lincoln County", color="green")
-        plt.bar(x, outside_county, width, bottom=inside_county, label="Outside County / Inside Oregon", color="yellow")
-        plt.bar(x, outside_oregon, width, bottom=inside_county + outside_county, label="Outside Oregon", color="red")
-        plt.bar(
-            x,
-            not_known,
-            width,
-            bottom=inside_county + outside_county + outside_oregon,
-            label="Unknown / Misc.",
-            color="gray",
+        self._draw_chart(
+            candidates, amounts, labels, colors,
+            title="Where Campaign Money Is Coming From",
+            filename="campaign-money-by-source.png",
+            percent=False,
+        )
+        self._draw_chart(
+            candidates, amounts, labels, colors,
+            title="Share of Campaign Money by Source",
+            filename="campaign-money-by-source-percent.png",
+            percent=True,
         )
 
-        totals = inside_county + outside_county + outside_oregon + not_known
-        self._add_stacked_percent_labels(
-            ax,
-            x,
-            [inside_county, outside_county, outside_oregon, not_known],
-            totals,
-            width,
-        )
-
-        plt.xticks(x, candidates, rotation=20, ha="right")
-        plt.ylabel("Dollars")
-        plt.title("Where Campaign Money Is Coming From")
-        plt.legend()
-        plt.tight_layout()
-        plt.savefig(self.output_dir / "campaign-money-by-source.png", dpi=200)
-        plt.close()
-
-        inside_county_pct = np.array([float(self._pct_value(s.inside_county, s.total)) for s in summaries])
-        outside_county_pct = np.array([float(self._pct_value(s.outside_county, s.total)) for s in summaries])
-        outside_oregon_pct = np.array([float(self._pct_value(s.outside_oregon, s.total)) for s in summaries])
-        not_known_pct = np.array([float(self._pct_value(s.not_known, s.total)) for s in summaries])
-
-        plt.figure(figsize=(14, 8))
-        plt.bar(x, inside_county_pct, width, label="Inside Lincoln County", color=INSIDE_COUNTY_COLOR)
-        plt.bar(x, outside_county_pct, width, bottom=inside_county_pct, label="Outside County / Inside Oregon", color=OUTSIDE_COUNTY_COLOR)
-        plt.bar(
-            x,
-            outside_oregon_pct,
-            width,
-            bottom=inside_county_pct + outside_county_pct,
-            label="Outside Oregon",
-            color=OUTSIDE_OREGON_COLOR,
-        )
-        plt.bar(
-            x,
-            not_known_pct,
-            width,
-            bottom=inside_county_pct + outside_county_pct + outside_oregon_pct,
-            label="Unknown / Misc.",
-            color=UNKNOWN_COLOR,
-        )
-
-        plt.xticks(x, candidates, rotation=20, ha="right")
-        plt.ylabel("Percent of Total")
-        plt.title("Share of Campaign Money by Source")
-        plt.ylim(0, 100)
-        plt.legend()
-        plt.tight_layout()
-        plt.savefig(self.output_dir / "campaign-money-by-source-percent.png", dpi=200)
-        plt.close()
-
-    def generate_candidate_party_charts(self, party_summaries: Sequence[CandidatePartySummary]) -> None:
+    def generate_candidate_party_charts(
+        self, party_summaries: Sequence[CandidatePartySummary]
+    ) -> None:
         if not party_summaries:
             return
 
         candidates = [summary.candidate for summary in party_summaries]
+        parties = ["DEM", "REP", "IND", "NAV", "UNK"]
+        data = {
+            "DEM": np.array([float(s.dem) for s in party_summaries]),
+            "REP": np.array([float(s.rep) for s in party_summaries]),
+            "IND": np.array([float(s.ind) for s in party_summaries]),
+            "NAV": np.array([float(s.nav) for s in party_summaries]),
+            "UNK": np.array([float(s.unk) for s in party_summaries]),
+        }
+        self_amount, self_party = self._own_contributions(candidates)
 
-        dem = np.array([float(summary.dem) for summary in party_summaries])
-        rep = np.array([float(summary.rep) for summary in party_summaries])
-        ind = np.array([float(summary.ind) for summary in party_summaries])
-        nav = np.array([float(summary.nav) for summary in party_summaries])
-        unk = np.array([float(summary.unk) for summary in party_summaries])
+        # Remove each candidate's contribution from their donor-party segment
+        # before displaying it separately in brown; totals stay unchanged.
+        for party in parties:
+            deductions = np.array(
+                [amount if candidate_party == party else 0.0
+                 for amount, candidate_party in zip(self_amount, self_party)],
+                dtype=float,
+            )
+            data[party] = self._subtract_checked(
+                data[party], deductions, candidates, PARTY_LABELS[party]
+            )
 
+        amounts = [data[party] for party in parties] + [self_amount]
+        labels = [PARTY_LABELS[party] for party in parties] + ["Candidate's Own Contributions"]
+        colors = [PARTY_COLORS[party] for party in parties] + [SELF_CONTRIBUTION_COLOR]
+
+        self._draw_chart(
+            candidates, amounts, labels, colors,
+            title="Campaign Contributions by Donor Party",
+            filename="campaign-money-by-candidate-donor-party.png",
+            percent=False,
+        )
+        self._draw_chart(
+            candidates, amounts, labels, colors,
+            title="Share of Contributions by Donor Party",
+            filename="campaign-money-by-candidate-donor-party-percent.png",
+            percent=True,
+        )
+
+    def _draw_chart(
+        self,
+        candidates: Sequence[str],
+        amounts: Sequence[np.ndarray],
+        labels: Sequence[str],
+        colors: Sequence[str],
+        title: str,
+        filename: str,
+        percent: bool,
+    ) -> None:
         x = np.arange(len(candidates))
         width = 0.7
-
-        plt.figure(figsize=(14, 8))
-        # plt.bar(x, dem, width, label=PARTY_LABELS["DEM"], color=PARTY_COLORS["DEM"])
-        # plt.bar(x, rep, width, bottom=dem, label=PARTY_LABELS["REP"], color=PARTY_COLORS["REP"])
-        # plt.bar(x, ind, width, bottom=dem + rep, label=PARTY_LABELS["IND"], color=PARTY_COLORS["IND"])
-        # plt.bar(x, nav, width, bottom=dem + rep + ind, label=PARTY_LABELS["NAV"], color=PARTY_COLORS["NAV"])
-        # plt.bar(x, unk, width, bottom=dem + rep + ind + nav, label=PARTY_LABELS["UNK"], color=PARTY_COLORS["UNK"])
-
-        ax = plt.gca()
-
-        plt.bar(x, dem, width, label=PARTY_LABELS["DEM"], color=PARTY_COLORS["DEM"])
-        plt.bar(x, rep, width, bottom=dem, label=PARTY_LABELS["REP"], color=PARTY_COLORS["REP"])
-        plt.bar(x, ind, width, bottom=dem + rep, label=PARTY_LABELS["IND"], color=PARTY_COLORS["IND"])
-        plt.bar(x, nav, width, bottom=dem + rep + ind, label=PARTY_LABELS["NAV"], color=PARTY_COLORS["NAV"])
-        plt.bar(x, unk, width, bottom=dem + rep + ind + nav, label=PARTY_LABELS["UNK"], color=PARTY_COLORS["UNK"])
-
-        totals = dem + rep + ind + nav + unk
-        self._add_stacked_percent_labels(
-            ax,
-            x,
-            [dem, rep, ind, nav, unk],
-            totals,
-            width,
+        totals = np.sum(np.array(amounts), axis=0)
+        displayed = (
+            [self._safe_percent_array(values, totals) for values in amounts]
+            if percent else amounts
         )
 
-        plt.xticks(x, candidates, rotation=20, ha="right")
-        plt.ylabel("Dollars")
-        plt.title("Campaign Contributions by Donor Party")
-        plt.legend()
-        plt.tight_layout()
-        plt.savefig(self.output_dir / "campaign-money-by-candidate-donor-party.png", dpi=200)
-        plt.close()
+        fig, ax = plt.subplots(figsize=(10, 10))
+        bottoms = np.zeros(len(candidates), dtype=float)
+        for values, label, color in zip(displayed, labels, colors):
+            ax.bar(x, values, width, bottom=bottoms, label=label, color=color)
+            bottoms += values
 
-        totals = dem + rep + ind + nav + unk
-        dem_pct = self._safe_percent_array(dem, totals)
-        rep_pct = self._safe_percent_array(rep, totals)
-        ind_pct = self._safe_percent_array(ind, totals)
-        nav_pct = self._safe_percent_array(nav, totals)
-        unk_pct = self._safe_percent_array(unk, totals)
-
-        plt.figure(figsize=(14, 8))
-        plt.bar(x, dem_pct, width, label=PARTY_LABELS["DEM"], color=PARTY_COLORS["DEM"])
-        plt.bar(x, rep_pct, width, bottom=dem_pct, label=PARTY_LABELS["REP"], color=PARTY_COLORS["REP"])
-        plt.bar(x, ind_pct, width, bottom=dem_pct + rep_pct, label=PARTY_LABELS["IND"], color=PARTY_COLORS["IND"])
-        plt.bar(
-            x,
-            nav_pct,
-            width,
-            bottom=dem_pct + rep_pct + ind_pct,
-            label=PARTY_LABELS["NAV"],
-            color=PARTY_COLORS["NAV"],
+        threshold = THRESHOLD * 100 if percent else float(np.max(totals)) * THRESHOLD
+        self._add_stacked_value_labels(
+            ax, x, displayed, amounts, totals, width, threshold
         )
-        plt.bar(
-            x,
-            unk_pct,
-            width,
-            bottom=dem_pct + rep_pct + ind_pct + nav_pct,
-            label=PARTY_LABELS["UNK"],
-            color=PARTY_COLORS["UNK"],
-        )
+        if not percent:
+            self._add_bar_totals(ax, x, totals)
+        else:
+            ax.set_ylim(0, 100)
 
-        plt.xticks(x, candidates, rotation=20, ha="right")
-        plt.ylabel("Percent of Total")
-        plt.title("Share of Contributions by Donor Party")
-        plt.ylim(0, 100)
-        plt.legend()
-        plt.tight_layout()
-        plt.savefig(self.output_dir / "campaign-money-by-candidate-donor-party-percent.png", dpi=200)
-        plt.close()
+        ax.set_xlim(-0.48, x[-1] + 0.95)
+        ax.set_xticks(x)
+        ax.set_xticklabels(candidates, rotation=20, ha="right")
+        ax.set_ylabel("Percent of Total" if percent else "Dollars")
+        ax.set_title(title)
+        ax.legend()
+        fig.tight_layout(pad=0.7)
+        fig.savefig(self.output_dir / filename, dpi=200)
+        plt.close(fig)
 
-    def _safe_percent_array(self, values: np.ndarray, totals: np.ndarray) -> np.ndarray:
+    @staticmethod
+    def _safe_percent_array(values: np.ndarray, totals: np.ndarray) -> np.ndarray:
         return np.divide(
             values * 100.0,
             totals,
@@ -206,57 +208,52 @@ class CampaignChartWriter:
             where=totals != 0,
         )
 
-    def _pct_value(self, numerator: Decimal, denominator: Decimal) -> Decimal:
-        if denominator == Decimal("0"):
-            return Decimal("0.0")
-        return ((numerator / denominator) * Decimal("100")).quantize(
-            Decimal("0.1"),
-            rounding=ROUND_HALF_UP,
-        )
-
-    def _add_stacked_percent_labels(
+    def _add_stacked_value_labels(
         self,
         ax,
         x: np.ndarray,
-        series: Sequence[np.ndarray],
+        display_series: Sequence[np.ndarray],
+        amount_series: Sequence[np.ndarray],
         totals: np.ndarray,
         width: float,
-        inside_threshold: float = 8.0,
+        inside_threshold: float,
     ) -> None:
-        cumulative = np.zeros_like(totals, dtype=float)
-
-        for values in series:
-            percents = self._safe_percent_array(values, totals)
-
-            for i, (value, pct, bottom) in enumerate(zip(values, percents, cumulative)):
-                if value <= 0 or totals[i] <= 0:
+        cumulative = np.zeros(len(x), dtype=float)
+        for display_values, amount_values in zip(display_series, amount_series):
+            percents = self._safe_percent_array(amount_values, totals)
+            for i, (display_value, amount_value, pct, bottom) in enumerate(
+                zip(display_values, amount_values, percents, cumulative)
+            ):
+                if display_value <= 0 or amount_value <= 0 or totals[i] <= 0:
                     continue
 
-                label = f"{pct:.0f}%"
-                y = bottom + (value / 2.0)
-
-                if pct >= inside_threshold:
+                inline_label = f"${amount_value:,.0f} ({pct:.0f}%)"
+                side_label = f"${amount_value:,.0f} ({pct:.0f}%)"
+                y = bottom + display_value / 2.0
+                if display_value >= inside_threshold:
                     ax.text(
-                        x[i],
-                        y,
-                        label,
-                        ha="center",
-                        va="center",
-                        fontsize=9,
-                        color="black",
-                        # color="white",
-                        fontweight="bold",
+                        x[i], y, inline_label,
+                        ha="center", va="center", fontsize=8,
+                        color="black", fontweight="bold",
                     )
                 else:
                     ax.annotate(
-                        label,
+                        side_label,
                         xy=(x[i] + width / 2, y),
-                        xytext=(4, 0),
-                        textcoords="offset points",
-                        ha="left",
-                        va="center",
-                        fontsize=8,
-                        color="black",
+                        xytext=(4, 0), textcoords="offset points",
+                        ha="left", va="center", fontsize=8,
+                        color="black", fontweight="bold",
                     )
+            cumulative += display_values
 
-            cumulative += values
+    @staticmethod
+    def _add_bar_totals(ax, x: np.ndarray, totals: np.ndarray) -> None:
+        highest = float(np.max(totals)) if len(totals) else 0.0
+        if highest > 0:
+            ax.set_ylim(0, highest * 1.18)
+        for xi, total in zip(x, totals):
+            ax.annotate(
+                f"${total:,.0f}", xy=(xi, total), xytext=(0, 6),
+                textcoords="offset points", ha="center", va="bottom",
+                fontsize=11, fontweight="bold", color="black",
+            )
