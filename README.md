@@ -38,7 +38,7 @@ Yes      Yes      Patricia Ferrell-French (DEM)                 250.00  Waldport
 Yes      Yes      Rose Jade (DEM)                               250.00  Newport         OR   
 Yes      Yes      Total                                       7,369.58                       
 
-Yes      No       End Of The Trail, LLC                         500.00  Dallas          OR   
+Yes      No       End Of The Trail, LLC                         500.00  Dallas          OR*   
 Yes      No       Total                                         500.00                       
 
 n/a      n/a      Misc. Cash Contributions up to $100 (12)    1,175.00                       
@@ -47,6 +47,11 @@ n/a      n/a      Total                                       1,242.26
 
                   Grand Total                                 9,111.84
 ```
+
+\* C&E Systems entered the wrong address for End Of The Trail, LLC.
+The correct address is 423 NW Ivy Ave, Dallas, OR 97338 per
+https://egov.sos.state.or.us/br/pkg_web_name_srch_inq.show_detl?p_be_rsn=1078854&p_srce=BR_INQ&p_print=FALSE
+
 
 ## seat-1-cathie-rigby-report
 
