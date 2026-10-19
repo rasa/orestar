@@ -28,11 +28,11 @@ PARTY_LABELS: Dict[str, str] = {
 }
 
 PARTY_COLORS: Dict[str, str] = {
-    "DEM": "lightskyblue",
-    "REP": "lightcoral",
-    "IND": "#BCA7BD",
-    "NAV": "lightgoldenrodyellow",
-    "UNK": "gray",
+    "DEM": "#91C7E8",  # Soft sky blue
+    "REP": "#E99691",  # Warm coral
+    "IND": "#C3ABD1",  # Soft lavender
+    "NAV": "#E9D98E",  # Warm golden yellow
+    "UNK": "#A8ADB2",  # Neutral gray
 }
 
 PARTY_ORDER: List[str] = ["DEM", "REP", "IND", "NAV", "UNK"]

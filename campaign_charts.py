@@ -18,11 +18,11 @@ import numpy as np
 from campaign_config import PARTY_COLORS, PARTY_LABELS
 from campaign_models import CandidatePartySummary, CandidateSummary
 
-INSIDE_COUNTY_COLOR = "green"
-OUTSIDE_COUNTY_COLOR = "yellow"
-OUTSIDE_OREGON_COLOR = "red"
-UNKNOWN_COLOR = "gray"
-SELF_CONTRIBUTION_COLOR = "#C49A6C"  # light brown; readable with black labels
+INSIDE_COUNTY_COLOR = "#78B878" # friendly green
+OUTSIDE_COUNTY_COLOR = "#F0A0BE" # Warm pink
+OUTSIDE_OREGON_COLOR = "#E87872" # Soft corel red
+UNKNOWN_COLOR = "#A8ADB2" # Neutral gray
+SELF_CONTRIBUTION_COLOR = "#76C9BD" # Soft turquoise
 
 THRESHOLD = 0.04
 
