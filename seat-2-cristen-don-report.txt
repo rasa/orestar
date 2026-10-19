@@ -1,43 +1,63 @@
 Cristen Don (DEM) (Seat 2):
 ORESTAR Contributions
-As of May 4, 2026
+As of October 18, 2026
 
-In       In       Contributor/Payee                           Amount    City          State
-Oregon?  County?                                                                           
--------  -------  ------------------------------------------  --------  ------------  -----
-Yes      Yes      May and Done (24823) (DEM)                  1,769.72  Oregon        OR   
-Yes      Yes      Robert Eder (NAV)                             500.00  Newport       OR   
-Yes      Yes      Wendy Yorkshire (DEM)                         500.00  Logsden       OR   
-Yes      Yes      Edward Backus (DEM)                           473.03  Newport       OR   
-Yes      Yes      Charles Plybon (DEM)                          300.00  South Beach   OR   
-Yes      Yes      Clifford Ryer (DEM)                           250.00  Seal Rock     OR   
-Yes      Yes      Laura Anderson (NAV)                          250.00  Newport       OR   
-Yes      Yes      Richard Brodeur (DEM)                         250.00  Newport       OR   
-Yes      Yes      Robert Kemp (IND)                             250.00  Newport       OR   
-Yes      Yes      David Fox (DEM)                               200.00  Toledo        OR   
-Yes      Yes      Michael Harrington (DEM)                      200.00  Newport       OR   
-Yes      Yes      Michelle Branam (IND)                         200.00  Newport       OR   
-Yes      Yes      Cristen Don (DEM)                             152.00  South Beach   OR   
-Yes      Yes      Mary Infante (DEM)                            125.00  Depoe Bay     OR   
-Yes      Yes      Caren Braby (DEM)                             120.00  Seal Rock     OR   
-Yes      Yes      Total                                       5,539.75                     
+In       In                                                                                               
+Oregon?  County?  Contributor/Payee                                        Amount    City            State
+-------  -------  -------------------------------------------------------  --------  --------------  -----
+Yes      Yes      Lincoln County Democratic Central Committee (326) (DEM)  2,056.06  Gleneden Beach  OR   
+Yes      Yes      May and Done (24823) (DEM)                               1,769.72  Oregon          OR   
+Yes      Yes      Cynthia Jacobi (DEM)                                       500.00  Newport         OR   
+Yes      Yes      Doug Hunt (DEM)                                            500.00  TOLEDO          OR   
+Yes      Yes      Ken Sund (DEM)                                             500.00  Otis            OR   
+Yes      Yes      Robert Eder (NAV)                                          500.00  Newport         OR   
+Yes      Yes      Wendy Yorkshire (DEM)                                      500.00  Logsden         OR   
+Yes      Yes      Edward Backus (DEM)                                        473.03  Newport         OR   
+Yes      Yes      Charles Plybon (DEM)                                       300.00  South Beach     OR   
+Yes      Yes      Thomas Swearingen (DEM)                                    300.00  Waldport        OR   
+Yes      Yes      Gabrielle Mcentee (DEM)                                    270.00  Newport         OR   
+Yes      Yes      Clifford Ryer (DEM)                                        250.00  Seal Rock       OR   
+Yes      Yes      Gary Lahman (DEM)                                          250.00  Newport         OR   
+Yes      Yes      Judith Bowman-Kreitmeyer (DEM)                             250.00  Lincoln City    OR   
+Yes      Yes      Laura Anderson (NAV)                                       250.00  Newport         OR   
+Yes      Yes      Richard Brodeur (DEM)                                      250.00  Newport         OR   
+Yes      Yes      Robert Kemp (IND)                                          250.00  Newport         OR   
+Yes      Yes      Elizabeth Fox (DEM)                                        245.00  Toledo          OR   
+Yes      Yes      Michael Harrington (DEM)                                   220.00  Newport         OR   
+Yes      Yes      David Fox (DEM)                                            200.00  Toledo          OR   
+Yes      Yes      Karen Dichari (DEM)                                        200.00  South Beach     OR   
+Yes      Yes      Louise Solliday (DEM)                                      200.00  Tidewater       OR   
+Yes      Yes      Michelle Branam (IND)                                      200.00  Newport         OR   
+Yes      Yes      Sarah Follett (DEM)                                        160.00  Newport         OR   
+Yes      Yes      Cristen Don (DEM)                                          152.00  South Beach     OR   
+Yes      Yes      Jay Sennewald (DEM)                                        150.00  Newport         OR   
+Yes      Yes      Lynetta Richardson (DEM)                                   150.00  Lincoln City    OR   
+Yes      Yes      Mary Infante (DEM)                                         125.00  Depoe Bay       OR   
+Yes      Yes      Caren Braby (DEM)                                          120.00  Seal Rock       OR   
+Yes      Yes      JoAnn Barton (DEM)                                         120.00  Newport         OR   
+Yes      Yes      Total                                                    11,410.81                       
 
-Yes      No       Christine Carpenter                         1,000.00  Portland      OR   
-Yes      No       Democratic Party of Oregon (353) (DEM)        650.00  Portland      OR   
-Yes      No       Carmen Matthews                               200.00  Coos Bay      OR   
-Yes      No       Total                                       1,850.00                     
+Yes      No       Christine Carpenter                                      1,250.00  Portland        OR   
+Yes      No       Brian Crain                                              1,000.00  McMinnville     OR   
+Yes      No       Deborah Duus (DEM)                                       1,000.00  Portland        OR   
+Yes      No       Democratic Party of Oregon (353) (DEM)                     650.00  Portland        OR   
+Yes      No       Christine DeMoll                                           500.00  Eugene          OR   
+Yes      No       Fair Market Value                                          420.00  Portland        OR   
+Yes      No       Carmen Matthews                                            200.00  Coos Bay        OR   
+Yes      No       Total                                                    5,020.00                       
 
-No       No       Paul Merrill                                1,000.00  Victor        ID   
-No       No       Robert Plybon                               1,000.00  Greensboro    NC   
-No       No       James Kenerly                                 500.00  Greensboro    NC   
-No       No       Lynn Graham                                   500.00  Mill Valley   CA   
-No       No       Juna Gates                                    300.00  Seattle       WA   
-No       No       Chad Nelsen                                   250.00  Laguna Beach  CA   
-No       No       Lynn Don                                      250.00  Fairfield     CA   
-No       No       Total                                       3,800.00                     
+No       No       Paul Merrill                                             1,000.00  Victor          ID   
+No       No       Robert Plybon                                            1,000.00  Greensboro      NC   
+No       No       Lynn Graham                                                750.00  Mill Valley     CA   
+No       No       Bruce Don                                                  500.00  Silver Spring   MD   
+No       No       James Kenerly                                              500.00  Greensboro      NC   
+No       No       Juna Gates                                                 300.00  Seattle         WA   
+No       No       Chad Nelsen                                                250.00  Laguna Beach    CA   
+No       No       Lynn Don                                                   250.00  Fairfield       CA   
+No       No       Total                                                    4,550.00                       
 
-n/a      n/a      Misc. Cash Contributions up to $100 (29)    3,520.00                     
-n/a      n/a      Misc. In-Kind Contributions up to $100 (3)    179.91                     
-n/a      n/a      Total                                       3,699.91                     
+n/a      n/a      Misc. Cash Contributions up to $100 (52)                 6,370.00                       
+n/a      n/a      Misc. In-Kind Contributions up to $100 (3)                 179.91                       
+n/a      n/a      Total                                                    6,549.91                       
 
-                  Grand Total                                 14,889.66                     
+                  Grand Total                                              27,530.72                       

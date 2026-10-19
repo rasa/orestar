@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Sequence, Set, Tuple
 
 import pandas as pd
+import zipfile
 
 from campaign_charts import CampaignChartWriter
 from campaign_config import (
@@ -69,7 +70,9 @@ class CampaignFinanceReportBuilder:
         self.chart_writer.generate_candidate_party_charts(party_summaries)
 
     def _read_rows(self, path: Path) -> List[ReportRow]:
-        df = pd.read_excel(path, engine="xlrd", dtype=str).fillna("")
+        print(path)
+        engine = "openpyxl" if zipfile.is_zipfile(path) else "xlrd"
+        df = pd.read_excel(path, engine=engine, dtype=str).fillna("")
 
         df = df[df["Sub Type"].isin(RELEVANT_SUBTYPES)].copy()
         df = df[df["Tran Date"].apply(self._is_on_or_after_cutoff)].copy()

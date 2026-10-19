@@ -1,21 +1,27 @@
 Casey Miller (NAV) (Seat 1):
 ORESTAR Contributions
-As of May 4, 2026
+As of October 18, 2026
 
-In       In       Contributor/Payee                           Amount    City            State
-Oregon?  County?                                                                             
+In       In                                                                                  
+Oregon?  County?  Contributor/Payee                           Amount    City            State
 -------  -------  ------------------------------------------  --------  --------------  -----
+Yes      Yes      Casey Miller (NAV)                          2,052.32  Newport         OR   
 Yes      Yes      Ross Smith (IND)                            1,817.26  Gleneden Beach  OR   
-Yes      Yes      Casey Miller (NAV)                          1,638.00  Newport         OR   
+Yes      Yes      Linda Snow (DEM)                            1,000.00  Newport         OR   
+Yes      Yes      Christine Jamison (IND)                       600.00  Otter Rock      OR   
 Yes      Yes      Rio Davidson (DEM)                            500.00  Newport         OR   
+Yes      Yes      Barbara Davis (DEM)                           400.00  Waldport        OR   
 Yes      Yes      Heather Brann (DEM)                           250.00  Otis            OR   
 Yes      Yes      Marie Dickerson (REP)                         250.00  Lincoln City    OR   
+Yes      Yes      Patricia Ferrell-French (DEM)                 250.00  Waldport        OR   
 Yes      Yes      Rose Jade (DEM)                               250.00  Newport         OR   
-Yes      Yes      Barbara Davis (DEM)                           200.00  Waldport        OR   
-Yes      Yes      Total                                       4,905.26                       
+Yes      Yes      Total                                       7,369.58                       
 
-n/a      n/a      Misc. Cash Contributions up to $100 (7)       850.00                       
+No       No       End Of The Trail, LLC                         500.00  Price           UT   
+No       No       Total                                         500.00                       
+
+n/a      n/a      Misc. Cash Contributions up to $100 (12)    1,175.00                       
 n/a      n/a      Misc. In-Kind Contributions up to $100 (1)     67.26                       
-n/a      n/a      Total                                         917.26                       
+n/a      n/a      Total                                       1,242.26                       
 
-                  Grand Total                                 5,822.52                       
+                  Grand Total                                 9,111.84                       

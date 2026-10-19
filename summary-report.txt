@@ -1,33 +1,15 @@
 Summary Report
 ORESTAR Contributions
-As of May 4, 2026
+As of October 18, 2026
 
-Candidate             Seat    Inside     Outside    Inside     Outside   Not        Total    
-                              County     County     Oregon     Oregon    Known               
---------------------  ------  ---------  ---------  ---------  --------  ---------  ---------
-Casey Miller (NAV)    Seat 1   4,905.26       0.00   4,905.26      0.00     917.26   5,822.52
-Cathie Rigby (DEM)    Seat 1   4,340.38   7,650.00  11,990.38      0.00   2,492.92  14,483.30
-Cheri Brubaker (DEM)  Seat 1   2,901.00       0.00   2,901.00  3,745.00      96.25   2,997.25
-Cristen Don (DEM)     Seat 2   5,539.75   1,850.00   7,389.75  3,800.00   3,699.91  11,089.66
-Curtis Landers (NAV)  Seat 3  10,022.78   1,500.00  11,522.78      0.00   2,569.49  14,092.27
-Walter Chuck (DEM)    Seat 3  10,019.73   1,500.00  11,519.73    375.00   1,372.92  12,892.65
---------------------  ------  ---------  ---------  ---------  --------  ---------  ---------
-Total                         37,728.90  12,500.00  50,228.90  7,920.00  11,148.75  61,377.65
+                            Inside     Outside    Inside     Outside   Not                 
+Candidate           Seat    County     County     Oregon     Oregon    Known      Total    
+------------------  ------  ---------  ---------  ---------  --------  ---------  ---------
+Casey Miller (NAV)  Seat 1   7,369.58       0.00   7,369.58    500.00   1,242.26   8,611.84
+Cathie Rigby (DEM)  Seat 1  17,357.24   9,065.23  26,422.47      0.00   5,254.92  31,677.39
+Cristen Don (DEM)   Seat 2  11,410.81   5,020.00  16,430.81  4,550.00   6,549.91  22,980.72
+Joe Steere (REP)    Seat 2   4,700.00       0.00   4,700.00      0.00     250.00   4,950.00
+------------------  ------  ---------  ---------  ---------  --------  ---------  ---------
+Total                       40,837.63  14,085.23  54,922.86  5,050.00  13,297.09  68,219.95
 
-The following candidates filed an ORESTAR certificate to spend 
-less than $5,000 on their campaigns:
 
-Name                 Seat
--------------------- ------
-Joe Steere (REP)     Seat 2
-Marci Baker (NAV)    Seat 2
-
-The following candidates are spending less than $750 on their 
-campaigns and as such, do not require an ORESTAR account:
-
-Name                 Seat
--------------------- ------
-Dru Earls (DEM)      Seat 1
-Nicolle Moody (REP)  Seat 1
-
-Eddie Townsend (NAV) Seat 2
