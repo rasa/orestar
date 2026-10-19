@@ -13,6 +13,10 @@ import numpy as np
 from campaign_config import PARTY_COLORS, PARTY_LABELS
 from campaign_models import CandidatePartySummary, CandidateSummary
 
+INSIDE_COUNTY_COLOR = "green"
+OUTSIDE_COUNTY_COLOR = "yellow"
+OUTSIDE_OREGON_COLOR = "red"
+UNKNOWN_COLOR = "gray"
 
 class CampaignChartWriter:
     def __init__(self, output_dir: Path) -> None:
@@ -33,15 +37,39 @@ class CampaignChartWriter:
         width = 0.7
 
         plt.figure(figsize=(14, 8))
-        plt.bar(x, inside_county, width, label="Inside Lincoln County")
-        plt.bar(x, outside_county, width, bottom=inside_county, label="Outside County / Inside Oregon")
-        plt.bar(x, outside_oregon, width, bottom=inside_county + outside_county, label="Outside Oregon")
+        # plt.bar(x, inside_county, width, label="Inside Lincoln County", color=INSIDE_COUNTY_COLOR)
+        # plt.bar(x, outside_county, width, bottom=inside_county, label="Outside County / Inside Oregon", color=OUTSIDE_COUNTY_COLOR)
+        # plt.bar(x, outside_oregon, width, bottom=inside_county + outside_county, label="Outside Oregon", color=OUTSIDE_OREGON_COLOR)
+        # plt.bar(
+        #     x,
+        #     not_known,
+        #     width,
+        #     bottom=inside_county + outside_county + outside_oregon,
+        #     label="Unknown / Misc.",
+        #     color=UNKNOWN_COLOR,
+        # )
+
+        ax = plt.gca()
+
+        plt.bar(x, inside_county, width, label="Inside Lincoln County", color="green")
+        plt.bar(x, outside_county, width, bottom=inside_county, label="Outside County / Inside Oregon", color="yellow")
+        plt.bar(x, outside_oregon, width, bottom=inside_county + outside_county, label="Outside Oregon", color="red")
         plt.bar(
             x,
             not_known,
             width,
             bottom=inside_county + outside_county + outside_oregon,
             label="Unknown / Misc.",
+            color="gray",
+        )
+
+        totals = inside_county + outside_county + outside_oregon + not_known
+        self._add_stacked_percent_labels(
+            ax,
+            x,
+            [inside_county, outside_county, outside_oregon, not_known],
+            totals,
+            width,
         )
 
         plt.xticks(x, candidates, rotation=20, ha="right")
@@ -58,14 +86,15 @@ class CampaignChartWriter:
         not_known_pct = np.array([float(self._pct_value(s.not_known, s.total)) for s in summaries])
 
         plt.figure(figsize=(14, 8))
-        plt.bar(x, inside_county_pct, width, label="Inside Lincoln County")
-        plt.bar(x, outside_county_pct, width, bottom=inside_county_pct, label="Outside County / Inside Oregon")
+        plt.bar(x, inside_county_pct, width, label="Inside Lincoln County", color=INSIDE_COUNTY_COLOR)
+        plt.bar(x, outside_county_pct, width, bottom=inside_county_pct, label="Outside County / Inside Oregon", color=OUTSIDE_COUNTY_COLOR)
         plt.bar(
             x,
             outside_oregon_pct,
             width,
             bottom=inside_county_pct + outside_county_pct,
             label="Outside Oregon",
+            color=OUTSIDE_OREGON_COLOR,
         )
         plt.bar(
             x,
@@ -73,6 +102,7 @@ class CampaignChartWriter:
             width,
             bottom=inside_county_pct + outside_county_pct + outside_oregon_pct,
             label="Unknown / Misc.",
+            color=UNKNOWN_COLOR,
         )
 
         plt.xticks(x, candidates, rotation=20, ha="right")
@@ -100,11 +130,28 @@ class CampaignChartWriter:
         width = 0.7
 
         plt.figure(figsize=(14, 8))
+        # plt.bar(x, dem, width, label=PARTY_LABELS["DEM"], color=PARTY_COLORS["DEM"])
+        # plt.bar(x, rep, width, bottom=dem, label=PARTY_LABELS["REP"], color=PARTY_COLORS["REP"])
+        # plt.bar(x, ind, width, bottom=dem + rep, label=PARTY_LABELS["IND"], color=PARTY_COLORS["IND"])
+        # plt.bar(x, nav, width, bottom=dem + rep + ind, label=PARTY_LABELS["NAV"], color=PARTY_COLORS["NAV"])
+        # plt.bar(x, unk, width, bottom=dem + rep + ind + nav, label=PARTY_LABELS["UNK"], color=PARTY_COLORS["UNK"])
+
+        ax = plt.gca()
+
         plt.bar(x, dem, width, label=PARTY_LABELS["DEM"], color=PARTY_COLORS["DEM"])
         plt.bar(x, rep, width, bottom=dem, label=PARTY_LABELS["REP"], color=PARTY_COLORS["REP"])
         plt.bar(x, ind, width, bottom=dem + rep, label=PARTY_LABELS["IND"], color=PARTY_COLORS["IND"])
         plt.bar(x, nav, width, bottom=dem + rep + ind, label=PARTY_LABELS["NAV"], color=PARTY_COLORS["NAV"])
         plt.bar(x, unk, width, bottom=dem + rep + ind + nav, label=PARTY_LABELS["UNK"], color=PARTY_COLORS["UNK"])
+
+        totals = dem + rep + ind + nav + unk
+        self._add_stacked_percent_labels(
+            ax,
+            x,
+            [dem, rep, ind, nav, unk],
+            totals,
+            width,
+        )
 
         plt.xticks(x, candidates, rotation=20, ha="right")
         plt.ylabel("Dollars")
@@ -166,3 +213,50 @@ class CampaignChartWriter:
             Decimal("0.1"),
             rounding=ROUND_HALF_UP,
         )
+
+    def _add_stacked_percent_labels(
+        self,
+        ax,
+        x: np.ndarray,
+        series: Sequence[np.ndarray],
+        totals: np.ndarray,
+        width: float,
+        inside_threshold: float = 8.0,
+    ) -> None:
+        cumulative = np.zeros_like(totals, dtype=float)
+
+        for values in series:
+            percents = self._safe_percent_array(values, totals)
+
+            for i, (value, pct, bottom) in enumerate(zip(values, percents, cumulative)):
+                if value <= 0 or totals[i] <= 0:
+                    continue
+
+                label = f"{pct:.0f}%"
+                y = bottom + (value / 2.0)
+
+                if pct >= inside_threshold:
+                    ax.text(
+                        x[i],
+                        y,
+                        label,
+                        ha="center",
+                        va="center",
+                        fontsize=9,
+                        color="black",
+                        # color="white",
+                        fontweight="bold",
+                    )
+                else:
+                    ax.annotate(
+                        label,
+                        xy=(x[i] + width / 2, y),
+                        xytext=(4, 0),
+                        textcoords="offset points",
+                        ha="left",
+                        va="center",
+                        fontsize=8,
+                        color="black",
+                    )
+
+            cumulative += values
