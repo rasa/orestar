@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import csv
+from datetime import date
 from decimal import Decimal, ROUND_HALF_UP
 from pathlib import Path
 from typing import List, Sequence, Set, Tuple
@@ -15,9 +16,14 @@ class CampaignReportFormatter:
     def __init__(self, output_dir: Path) -> None:
         self.output_dir = output_dir
 
+    @staticmethod
+    def as_of() -> str:
+        today = date.today()
+        return f"As of {today:%B} {today.day}, {today.year}"
+
     def format_candidate_report(self, rows: Sequence[ReportRow], title: str) -> str:
-        headers_top = ("In", "In", "Contributor/Payee", "Amount", "City", "State")
-        headers_bottom = ("Oregon?", "County?", "", "", "", "")
+        headers_top = ("In", "In", "", "", "", "")
+        headers_bottom = ("Oregon?", "County?", "Contributor/Payee", "Amount", "City", "State")
         numeric_cols = {3}
 
         data_rows = [
@@ -34,10 +40,12 @@ class CampaignReportFormatter:
 
         widths = self._compute_widths(headers_top, headers_bottom, data_rows)
 
+        as_of = self.as_of()
+
         parts = [
             f"{title}:",
             "ORESTAR Contributions",
-            "As of May 4, 2026",
+            as_of,
             "",
             self._format_mixed_line(headers_top, widths, numeric_cols=set()),
             self._format_mixed_line(headers_bottom, widths, numeric_cols=set()),
@@ -86,8 +94,8 @@ class CampaignReportFormatter:
         return "\n".join(parts) + "\n"
 
     def format_summary_report(self, summaries: Sequence[CandidateSummary]) -> str:
-        headers_top = ("Candidate", "Seat", "Inside", "Outside", "Inside", "Outside", "Not", "Total")
-        headers_bottom = ("", "", "County", "County", "Oregon", "Oregon", "Known", "")
+        headers_top = ("", "", "Inside", "Outside", "Inside", "Outside", "Not", "")
+        headers_bottom = ("Candidate", "Seat", "County", "County", "Oregon", "Oregon", "Known", "Total")
         numeric_cols = {2, 3, 4, 5, 6, 7}
 
         data_rows = [
@@ -117,10 +125,12 @@ class CampaignReportFormatter:
 
         widths = self._compute_widths(headers_top, headers_bottom, data_rows + [total_row])
 
+        as_of = self.as_of()
+
         parts = [
             "Summary Report",
             "ORESTAR Contributions",
-            "As of May 4, 2026",
+            as_of,
             "",
             self._format_mixed_line(headers_top, widths, numeric_cols=set()),
             self._format_mixed_line(headers_bottom, widths, numeric_cols=set()),
@@ -136,8 +146,8 @@ class CampaignReportFormatter:
         return "\n".join(parts) + "\n"
 
     def format_summary_percentage_report(self, summaries: Sequence[CandidateSummary]) -> str:
-        headers_top = ("Candidate", "Seat", "Inside", "Outside", "Inside", "Outside", "Not", "Total")
-        headers_bottom = ("", "", "County", "County", "Oregon", "Oregon", "Known", "")
+        headers_top = ("", "", "Inside", "Outside", "Inside", "Outside", "Not", "")
+        headers_bottom = ("Candidate", "Seat", "County", "County", "Oregon", "Oregon", "Known", "Total")
         numeric_cols = {2, 3, 4, 5, 6, 7}
 
         data_rows = [
@@ -169,10 +179,12 @@ class CampaignReportFormatter:
 
         widths = self._compute_widths(headers_top, headers_bottom, data_rows + [average_row])
 
+        as_of = self.as_of()
+
         parts = [
             "Summary Percentage Report",
             "ORESTAR Contributions",
-            "As of May 4, 2026",
+            as_of,
             "",
             self._format_mixed_line(headers_top, widths, numeric_cols=set()),
             self._format_mixed_line(headers_bottom, widths, numeric_cols=set()),
@@ -335,4 +347,3 @@ class CampaignReportFormatter:
             widths,
             numeric_cols=numeric_cols,
         )
-        
