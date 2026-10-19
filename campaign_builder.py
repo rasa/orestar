@@ -148,11 +148,15 @@ class CampaignFinanceReportBuilder:
                 )
                 donor_party = self.voter_lookup.party_for_name(item.contributor_payee) or "UNK"
 
+            contributor_payee=self.voter_lookup.append_party(display_name).replace(
+                "Lincoln County", "Lincoln Co."
+            )
+
             rows.append(
                 ReportRow(
                     in_state=in_state,
                     in_county=in_county,
-                    contributor_payee=self.voter_lookup.append_party(display_name),
+                    contributor_payee=contributor_payee,
                     amount=final_amount,
                     city=item.city,
                     state=item.state,

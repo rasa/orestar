@@ -17,11 +17,8 @@ def main() -> None:
     filenames = [
         "seat-1-casey-miller.xls",
         "seat-1-cathie-rigby.xls",
-        # "seat-1-cheri-brubaker.xls",
         "seat-2-cristen-don.xls",
         "seat-2-joe-steere.xls",
-        # "seat-3-curtis-landers.xls",
-        # "seat-3-walter-chuck.xls",
     ]
 
     voter_lookup = VoterPartyLookup.from_file(voters_path)

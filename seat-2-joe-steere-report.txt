@@ -2,15 +2,15 @@ Joe Steere (REP) (Seat 2):
 ORESTAR Contributions
 As of October 18, 2026
 
-In       In                                                                                             
-Oregon?  County?  Contributor/Payee                                        Amount    City          State
--------  -------  -------------------------------------------------------  --------  ------------  -----
-Yes      Yes      Joe Steere (REP)                                         3,000.00  Lincoln City  OR   
-Yes      Yes      Cathy Steere (REP)                                       1,200.00  Lincoln City  OR   
-Yes      Yes      Lincoln County Republican Central Committee (327) (REP)    500.00  Newport       OR   
-Yes      Yes      Total                                                    4,700.00                     
+In       In                                                                                          
+Oregon?  County?  Contributor/Payee                                     Amount    City          State
+-------  -------  ----------------------------------------------------  --------  ------------  -----
+Yes      Yes      Joe Steere (REP)                                      3,000.00  Lincoln City  OR   
+Yes      Yes      Cathy Steere (REP)                                    1,200.00  Lincoln City  OR   
+Yes      Yes      Lincoln Co. Republican Central Committee (327) (REP)    500.00  Newport       OR   
+Yes      Yes      Total                                                 4,700.00                     
 
-n/a      n/a      Misc. Cash Contributions up to $100 (3)                    250.00                     
-n/a      n/a      Total                                                      250.00                     
+n/a      n/a      Misc. Cash Contributions up to $100 (3)                 250.00                     
+n/a      n/a      Total                                                   250.00                     
 
-                  Grand Total                                              4,950.00                     
+                  Grand Total                                           4,950.00                     
