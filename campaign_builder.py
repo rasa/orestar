@@ -49,18 +49,19 @@ class CampaignFinanceReportBuilder:
             report_text = self.formatter.format_candidate_report(rows, title)
 
             output_path = self.output_dir / f"{input_path.stem}-report.txt"
-            output_path.write_text(report_text, encoding="utf-8")
+            output_path.write_text(report_text, encoding="utf-8", newline="\n")
 
             summaries.append(self._build_candidate_summary(rows, input_path.name))
             party_summaries.append(self._build_candidate_party_summary(rows, input_path.name))
 
         summary_report_path = self.output_dir / "summary-report.txt"
-        summary_report_path.write_text(self.formatter.format_summary_report(summaries), encoding="utf-8")
+        summary_report_path.write_text(self.formatter.format_summary_report(summaries), encoding="utf-8", newline="\n")
         self._append_summary_footer(summary_report_path)
 
         (self.output_dir / "summary-percentages-report.txt").write_text(
             self.formatter.format_summary_percentage_report(summaries),
             encoding="utf-8",
+            newline="\n",
         )
 
         self.formatter.write_summary_percentage_csv(summaries)

@@ -14,8 +14,6 @@ As of October 18, 2026
 ## campaign-money-by-candidate-donor-party
 ![campaign-money-by-candidate-donor-party](campaign-money-by-candidate-donor-party.png)
 
-
-
 <!-- BEGIN REPORTS -->
 
 ## seat-1-casey-miller-report
@@ -60,7 +58,7 @@ As of October 18, 2026
 In       In                                                                                               
 Oregon?  County?  Contributor/Payee                                        Amount    City            State
 -------  -------  -------------------------------------------------------  --------  --------------  -----
-Yes      Yes      Lincoln County Democratic Central Committee (326) (DEM)  2,056.06  Gleneden Beach  OR   
+Yes      Yes      Lincoln Co. Democratic Central Committee (326) (DEM)  2,056.06  Gleneden Beach  OR   
 Yes      Yes      May and Done (24823) (DEM)                               1,769.73  Oregon          OR   
 Yes      Yes      Karen Edmisten (DEM)                                     1,250.00  Newport         OR   
 Yes      Yes      Beth Young (DEM)                                         1,100.00  Newport         OR   
@@ -114,7 +112,7 @@ As of October 18, 2026
 In       In                                                                                               
 Oregon?  County?  Contributor/Payee                                        Amount    City            State
 -------  -------  -------------------------------------------------------  --------  --------------  -----
-Yes      Yes      Lincoln County Democratic Central Committee (326) (DEM)  2,056.06  Gleneden Beach  OR   
+Yes      Yes      Lincoln Co. Democratic Central Committee (326) (DEM)  2,056.06  Gleneden Beach  OR   
 Yes      Yes      May and Done (24823) (DEM)                               1,769.72  Oregon          OR   
 Yes      Yes      Cynthia Jacobi (DEM)                                       500.00  Newport         OR   
 Yes      Yes      Doug Hunt (DEM)                                            500.00  TOLEDO          OR   
@@ -184,7 +182,7 @@ Oregon?  County?  Contributor/Payee                                        Amoun
 -------  -------  -------------------------------------------------------  --------  ------------  -----
 Yes      Yes      Joe Steere (REP)                                         3,000.00  Lincoln City  OR   
 Yes      Yes      Cathy Steere (REP)                                       1,200.00  Lincoln City  OR   
-Yes      Yes      Lincoln County Republican Central Committee (327) (REP)    500.00  Newport       OR   
+Yes      Yes      Lincoln Co. Republican Central Committee (327) (REP)    500.00  Newport       OR   
 Yes      Yes      Total                                                    4,700.00                     
 
 n/a      n/a      Misc. Cash Contributions up to $100 (3)                    250.00                     

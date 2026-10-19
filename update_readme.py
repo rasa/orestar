@@ -22,6 +22,12 @@ text += f"\n\n{start}\n"
 
 for file in files:
     content = file.read_text(encoding="utf-8").rstrip()
+
+    content = content.replace(
+        "Lincoln County",
+        "Lincoln Co."
+    )
+
     text += f"\n## {file.stem}\n\n```text\n{content}\n```\n"
 
 text += f"\n{end}\n"
