@@ -1,6 +1,6 @@
 Summary Percentage Report
 ORESTAR Contributions
-As of October 18, 2026
+As of October 19, 2026
 
                             Inside  Outside  Inside  Outside  Not          
 Candidate           Seat    County  County   Oregon  Oregon   Known  Total 
