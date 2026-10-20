@@ -35,5 +35,5 @@ for file in files:
 
 text += f"\n{end}\n"
 
-readme.write_text(text, encoding="utf-8")
+readme.write_text(text, encoding="utf-8", newline="\n")
 print(f"Updated README.md with {len(files)} reports.")
