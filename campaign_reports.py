@@ -4,10 +4,11 @@
 from __future__ import annotations
 
 import csv
-from datetime import date
+from datetime import datetime
 from decimal import Decimal, ROUND_HALF_UP
 from pathlib import Path
 from typing import List, Sequence, Set, Tuple
+from zoneinfo import ZoneInfo
 
 from campaign_models import CandidatePartySummary, CandidateSummary, ReportRow
 
@@ -18,7 +19,7 @@ class CampaignReportFormatter:
 
     @staticmethod
     def as_of() -> str:
-        today = date.today()
+        today = datetime.now(ZoneInfo("America/Los_Angeles")).date()
         return f"As of {today:%B} {today.day}, {today.year}"
 
     def format_candidate_report(self, rows: Sequence[ReportRow], title: str) -> str:
