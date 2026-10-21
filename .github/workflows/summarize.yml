@@ -15,12 +15,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Run actions/checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
       - name: Run actions/setup-python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: '3.13'
           cache: 'pip'
@@ -33,7 +33,9 @@ jobs:
 
       - name: Run python summarize.py
         # ignore syntax error on the following line
-        run: python summarize.py
+        run: |
+          python summarize.py
+          python update_readme.py
 
       - name: Commit changes
         run: |
