@@ -16,7 +16,7 @@ As of October 18, 2026
 ![campaign-money-by-candidate-donor-party-percent](campaign-money-by-candidate-donor-party-percent.png)
 -->
 
-<!-- BEGIN REPORTS -->
+<!-- BEGIN REPORTS
 
 ## seat-1-casey-miller-report
 
@@ -192,5 +192,4 @@ n/a      n/a      Total                                                   250.00
 
                   Grand Total                                           4,950.00
 ```
-
-<!-- END REPORTS -->
+ END REPORTS -->
