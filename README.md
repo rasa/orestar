@@ -23,7 +23,7 @@ As of October 18, 2026
 ```text
 Casey Miller (NAV) (Seat 1):
 ORESTAR Contributions
-As of October 20, 2026
+As of October 21, 2026
 
 In       In                                                                                  
 Oregon?  County?  Contributor/Payee                           Amount    City            State
@@ -55,7 +55,7 @@ n/a      n/a      Total                                       1,242.26
 ```text
 Cathie Rigby (DEM) (Seat 1):
 ORESTAR Contributions
-As of October 20, 2026
+As of October 21, 2026
 
 In       In                                                                                            
 Oregon?  County?  Contributor/Payee                                     Amount    City            State
@@ -109,7 +109,7 @@ n/a      n/a      Total                                                 5,254.92
 ```text
 Cristen Don (DEM) (Seat 2):
 ORESTAR Contributions
-As of October 20, 2026
+As of October 21, 2026
 
 In       In                                                                                            
 Oregon?  County?  Contributor/Payee                                     Amount    City            State
@@ -177,7 +177,7 @@ n/a      n/a      Total                                                 6,549.91
 ```text
 Joe Steere (REP) (Seat 2):
 ORESTAR Contributions
-As of October 20, 2026
+As of October 21, 2026
 
 In       In                                                                                          
 Oregon?  County?  Contributor/Payee                                     Amount    City          State
