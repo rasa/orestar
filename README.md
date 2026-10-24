@@ -1,6 +1,6 @@
 # ORESTAR Campaign Donations
 For Lincoln County Commissioner Candidates<br/>
-As of October 18, 2026
+As of October 20, 2026
 
 ## campaign-money-by-source
 ![campaign-money-by-source](campaign-money-by-source.png)
