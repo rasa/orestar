@@ -8,7 +8,14 @@ As of October 20, 2026
 ## campaign-money-by-candidate-donor-party
 ![campaign-money-by-candidate-donor-party](campaign-money-by-candidate-donor-party.png)
 
-Sources:
+## ORESTAR transactions
+
+Casey Miller: https://secure.sos.state.or.us/orestar/cneSearch.do?cneSearchFilerCommitteeId=21812 <br/>
+Cathie Rigby: https://secure.sos.state.or.us/orestar/cneSearch.do?cneSearchFilerCommitteeId=24794 <br/>
+Cristen Don: https://secure.sos.state.or.us/orestar/cneSearch.do?cneSearchFilerCommitteeId=24749 <br/>
+Joe Steere: https://secure.sos.state.or.us/orestar/cneSearch.do?cneSearchFilerCommitteeId=24937
+
+## ORESTAR main pages
 
 Casey Miller: https://secure.sos.state.or.us/orestar/sooDetail.do?sooRsn=107001 <br/>
 Cathie Rigby: https://secure.sos.state.or.us/orestar/sooDetail.do?sooRsn=107093 <br/>
